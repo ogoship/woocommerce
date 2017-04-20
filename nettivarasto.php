@@ -1,23 +1,23 @@
 <?php
 /**
- * Plugin Name: WooCommerce Nettivarasto API
- * Plugin URI: http://www.contrast.fi
- * Description: Integrate WooCommerce with Nettivarasto (http://www.nettivarasto.fi).
- * Author: Sami Mäkelä / Contrast.fi
- * Author URI: http://www.contrast.fi
+ * Plugin Name: WooCommerce OGOShip / Nettivarasto API
+ * Plugin URI: https://github.com/ogoship/woocommerce
+ * Description: Integrate WooCommerce with Nettivarasto (http://nettivarasto.fi).
+ * Author: OGOShip / Nettivarasto
+ * Author URI: http://nettivarasto.fi
  * Version: 1.3.0b
  * Text Domain: wc-nv-api
  * Domain Path: /i18n/languages/
  *
- * Copyright: (c) 2014 Contrast Digital Ltd. (hello@contrast.fi)
+ * Copyright: (c) 2017 Koivua Oy.
  *
  * License: GNU General Public License v3.0
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  *
  * @package   WC-Nettivarasto
- * @author    Contrast Digital Ltd.
+ * @author    OGOShip / Nettivarasto.
  * @category  
- * @copyright Copyright (c) 2016, Contrast Digital Oy
+ * @copyright Copyright (c) 2016, Koivua Oy
  * @license   http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
