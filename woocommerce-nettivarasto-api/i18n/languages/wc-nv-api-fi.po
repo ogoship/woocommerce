@@ -1,0 +1,161 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: WooCommerce Nettivarasto API\n"
+"POT-Creation-Date: 2015-02-26 09:23+0200\n"
+"PO-Revision-Date: 2015-02-26 09:23+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.7.4\n"
+"X-Poedit-Basepath: ../..\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: nettivarasto.php:50 nettivarasto.php:58 nettivarasto.php:77
+msgid "Tracking code:"
+msgstr "Seurantakoodi:"
+
+#: nettivarasto.php:57 nettivarasto.php:76
+msgid "Track Your Shipment"
+msgstr "Seuraa lähetystäsi"
+
+#: nettivarasto.php:169
+msgid "Transfer to Nettivarasto"
+msgstr "Siirrä Nettivarastoon"
+
+#: nettivarasto.php:171
+msgid ""
+"Transfer orders made by this shipping method automatically to Nettivarasto."
+msgstr ""
+"Siirrä tällä toimitustavalla tehdyt tilaukset automaattisesti Nettivarastoon."
+
+#: nettivarasto.php:175
+msgid "Delivery Type"
+msgstr "Toimitustapa:"
+
+#: nettivarasto.php:177
+msgid ""
+"Set external code of the default Nettivarasto delivery type for this "
+"shipping method."
+msgstr "Aseta Nettivaraston koodi haluamallesi oletustoimitustavalle."
+
+#: nettivarasto.php:187
+msgid "Nettivarasto General Settings"
+msgstr "Nettivaraston yleiset asetukset"
+
+#: nettivarasto.php:189
+msgid ""
+"<p>The following are Nettivarasto general settings.</p><h4>Export</"
+"h4><p>Click <a href=\"?page=wc-settings&export_all=true\">here</a> to export "
+"all products to Nettivarasto.</p><h4>Update Orders and Products</h4><p>Click "
+"<a href=\"?page=wc-settings&get_latest_changes=true\">here</a> to update "
+"product and order info from Nettivarasto.</p>"
+msgstr ""
+"<p>Alla olevat ovat Nettivaraston yleisiä asetuksia.</p><h4>Vie</"
+"h4><p>Klikkaa <a href=\"?page=wc-settings&export_all=true\">tästä</a> "
+"viedäksesi tuotteet Nettivarastoon.</p><h4>Päivitä tilaukset ja tuotteet</"
+"h4><p>Kilkkaa <a href=\"?page=wc-settings&get_latest_changes=true\">tästä</"
+"a> päivittääksesi varastosaldot ja tilausten tilat Nettivarastosta.</p>"
+
+#: nettivarasto.php:193
+msgid "Merchant ID"
+msgstr "Kauppias ID"
+
+#: nettivarasto.php:194
+msgid "Insert Merchant ID from Nettivarasto"
+msgstr "Syötä Nettivarastolta saamasi kauppias ID"
+
+#: nettivarasto.php:200
+msgid "Secret Token"
+msgstr "Salainen avain"
+
+#: nettivarasto.php:201
+msgid "Insert Nettivarasto Secret token"
+msgstr "Syötä Nettivarastolta saamasi salainen avain"
+
+#: nettivarasto.php:222
+msgid "Supplier:"
+msgstr "Toimittaja:"
+
+#: nettivarasto.php:225
+msgid "Enter name of supplier for Nettivarasto."
+msgstr "Syötä tavarantoimittajan nimi."
+
+#: nettivarasto.php:231
+msgid "Supplier code:"
+msgstr "Tavarantoimittajan koodi:"
+
+#: nettivarasto.php:234
+msgid "Enter code of supplier for Nettivarasto."
+msgstr "Tavarantoimittajan koodi, joka lähetetään Nettivarastoon."
+
+#: nettivarasto.php:240
+msgid "Group:"
+msgstr "Tuoteryhmä:"
+
+#: nettivarasto.php:243
+msgid "Enter group of product for Nettivarasto."
+msgstr "Syötä Nettivarastoon lähetettävä tuoteryhmä."
+
+#: nettivarasto.php:249
+msgid "Purchase price:"
+msgstr "Sisäänostohinta:"
+
+#: nettivarasto.php:252
+msgid "Enter purchase for Nettivarasto."
+msgstr "Syötä sisäänostohinta, joka lähetetetään Nettivarastolle."
+
+#: nettivarasto.php:258
+msgid ""
+"Check if you do <strong>not</strong> want to export this product "
+"automatically to Nettivarasto."
+msgstr ""
+"Valitse, mikäli tämän tuotteen tietoja <strong>ei</strong> viedä "
+"Nettivarastoon."
+
+#: nettivarasto.php:259
+msgid "Do not export to Nettivarasto"
+msgstr "Älä vie Nettivarastoon"
+
+#: nettivarasto.php:332
+msgid "Order transferred to Nettivarasto"
+msgstr "Tilaus siirretty Nettivarastoon"
+
+#: nettivarasto.php:337
+msgid "Error: "
+msgstr "Virhe:"
+
+#: nettivarasto.php:514
+msgid "Send Order to Nettivarasto"
+msgstr "Lähetä tilaus Nettivarastoon"
+
+#: nettivarasto.php:535
+msgid "Nettivarasto change of status to SHIPPED. "
+msgstr "Nettivaraston status: LÄHETETTY"
+
+#: nettivarasto.php:536
+msgid "Tracking number: "
+msgstr "Seurantatunnus:"
+
+#: nettivarasto.php:540
+msgid "Nettivarasto change of status to CANCELLED."
+msgstr "Nettivaraston status: PERUUTETTU."
+
+#: nettivarasto.php:543
+msgid "Nettivarasto change of status to COLLECTING."
+msgstr "Nettivaraston status: KERÄTÄÄN."
+
+#: nettivarasto.php:546
+msgid "Nettivarasto change of status to PENDING."
+msgstr "Nettivaraston status: ODOTTAA."
+
+#: nettivarasto.php:549
+msgid "Nettivarasto change of status to RESERVED."
+msgstr "Nettivaraston status: VARATTU."
