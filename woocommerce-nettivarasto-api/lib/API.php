@@ -169,9 +169,6 @@ class NettivarastoAPI
   
   function getSHA1($parameters)
   {
-    /// \todo REMOVE
-    //return 'Dem0';
-	//$parameters = array("product","all");
     return sha1(implode(',', $parameters) . ',' . $this->secretToken);
   }
   function getProduct($productCode, &$product)

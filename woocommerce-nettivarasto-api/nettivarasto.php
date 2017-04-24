@@ -232,9 +232,10 @@ class nv_wc_api {
     foreach ( $shipping_methods as $shipping_method ) {
       $method_id = ($shipping_method[item_meta][method_id][0]);
     }
+	
 
     $shipping_method_options = get_option('woocommerce_'.str_replace(':','_',$method_id).'_settings');
-
+	
       $order = new NettivarastoAPI_Order($this->api,$order_id);
       $nettivarasto_shipping_method=$shipping_method_options['nettivarasto_delivery_type_id'];
       $order_number=$order_id;
@@ -275,7 +276,7 @@ class nv_wc_api {
           wp_mail( get_option( 'admin_email' ), 'Error - Nettivarasto API', $this->api->getLastError() ); 
       return; 
       }    
-   /*}*/
+
   }
 
 
@@ -390,7 +391,7 @@ class nv_wc_api {
         $variations = '';
       } 
     }  
-	//exit;
+
     if ( $sitepress ) {
       //Let's switch back to original language
       $sitepress->switch_lang( $original_language );
