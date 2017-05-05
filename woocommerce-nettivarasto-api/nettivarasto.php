@@ -17,7 +17,7 @@
  * @package   WC-Nettivarasto
  * @author    OGOShip / Nettivarasto.
  * @category  
- * @copyright Copyright (c) 2016, Koivua Oy
+ * @copyright Copyright (c) 2017, Koivua Oy
  * @license   http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
@@ -230,7 +230,7 @@ class nv_wc_api {
     $WC_order = new WC_Order($order_id);
     $shipping_methods = $WC_order->get_shipping_methods(); 
     foreach ( $shipping_methods as $shipping_method ) {
-      $method_id = ($shipping_method[item_meta][method_id][0]);
+		$method_id = ($shipping_method[meta_data][method_id][0]);
     }
 	
 
