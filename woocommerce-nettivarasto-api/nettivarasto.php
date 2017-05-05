@@ -229,8 +229,9 @@ class nv_wc_api {
     global $woocommerce;
     $WC_order = new WC_Order($order_id);
     $shipping_methods = $WC_order->get_shipping_methods(); 
-    foreach ( $shipping_methods as $shipping_method ) {
-		$method_id = ($shipping_method[meta_data][method_id][0]);
+	foreach ( $shipping_methods as $key=>$shipping_method ) {
+		$strShippingDecode = json_decode($shipping_methods[$key]);
+		$method_id = $strShippingDecode->method_id;
     }
 	
 
