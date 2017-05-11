@@ -17,7 +17,7 @@
  * @package   WC-Nettivarasto
  * @author    OGOShip / Nettivarasto.
  * @category  
- * @copyright Copyright (c) 2016, Koivua Oy
+ * @copyright Copyright (c) 2017, Koivua Oy
  * @license   http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
