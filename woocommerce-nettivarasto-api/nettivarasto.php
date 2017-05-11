@@ -243,7 +243,11 @@ class nv_wc_api {
       $index = 0;
 	  $strTotalProducts =	count($WC_order->get_items());	
       foreach($WC_order->get_items() as $item) {
-		  $product=new WC_Product_Variable($id=($item['variation_id'] ? $item['variation_id'] : $item['product_id']));
+	  	  if($item['variation_id']!=0){	
+		  	$product=new WC_Product_Variation($item['variation_id']);
+		  }elseif($item['product_id']!=0){
+		  	$product=new WC_Product_Variable($item['product_id']);
+		  }
 		  if(( get_post_meta($id, '_nettivarasto_no_export', true) ) == 'yes' && $strTotalProducts==1){
 		  		 $WC_order->add_order_note(__('No more product to export this order'), 0);
 				 return;

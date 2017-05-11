@@ -60,7 +60,7 @@ class NettivarastoAPI
   
   function latestChanges(&$products, &$orders)
   {
-    $restClient = new NettivarastoAPI_RESTclient($this, 'GET', '/LatestChanges', array('changes', $this->timestamp));
+    $restClient = new NettivarastoAPI_RESTclient($this, 'GET', '/LatestChanges', array('order','latestchanges', $this->timestamp));
     $restClient->addGetParameter('TimeStamp', $this->timestamp);
     $resultArray = array();
     $success = $restClient->execute($resultArray);
