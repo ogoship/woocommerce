@@ -241,13 +241,10 @@ class nv_wc_api {
       $nettivarasto_shipping_method=$shipping_method_options['nettivarasto_delivery_type_id'];
       $order_number=$order_id;
       $index = 0;
-	  $strTotalProducts =	count($WC_order->get_items());	
+	  $strTotalProducts =	count($WC_order->get_items());
       foreach($WC_order->get_items() as $item) {
-	  	  if($item['variation_id']!=0){	
-		  	$product=new WC_Product_Variation($item['variation_id']);
-		  }elseif($item['product_id']!=0){
-		  	$product=new WC_Product_Variable($item['product_id']);
-		  }
+		  $product=new WC_Product_Variation($id=($item['variation_id'] ? $item['variation_id'] : $item['product_id']));
+		  //$product=new WC_Product($id=($item['product_id'] ? $item['product_id'] : $item['variation_id']));
 		  if(( get_post_meta($id, '_nettivarasto_no_export', true) ) == 'yes' && $strTotalProducts==1){
 		  		 $WC_order->add_order_note(__('No more product to export this order'), 0);
 				 return;
