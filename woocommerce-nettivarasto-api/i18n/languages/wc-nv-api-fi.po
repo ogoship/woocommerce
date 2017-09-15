@@ -1,161 +1,231 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce Nettivarasto API\n"
-"POT-Creation-Date: 2015-02-26 09:23+0200\n"
-"PO-Revision-Date: 2015-02-26 09:23+0200\n"
-"Last-Translator: \n"
+"POT-Creation-Date: 2017-09-15 17:14+0300\n"
+"PO-Revision-Date: 2017-09-15 17:17+0300\n"
+"Last-Translator: Ilkka Loppi <loppi@iki.fi>\n"
 "Language-Team: \n"
 "Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.7.4\n"
+"X-Generator: Poedit 2.0.3\n"
 "X-Poedit-Basepath: ../..\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
-"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
-"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;esc_attr_e;"
+"esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;_nx_noop:3c,1,2;"
+"__ngettext_noop:1,2\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: nettivarasto.php:50 nettivarasto.php:58 nettivarasto.php:77
-msgid "Tracking code:"
-msgstr "Seurantakoodi:"
-
-#: nettivarasto.php:57 nettivarasto.php:76
-msgid "Track Your Shipment"
-msgstr "Seuraa lähetystäsi"
-
-#: nettivarasto.php:169
+#: nettivarasto.php:101
 msgid "Transfer to Nettivarasto"
 msgstr "Siirrä Nettivarastoon"
 
-#: nettivarasto.php:171
-msgid ""
-"Transfer orders made by this shipping method automatically to Nettivarasto."
-msgstr ""
-"Siirrä tällä toimitustavalla tehdyt tilaukset automaattisesti Nettivarastoon."
+#: nettivarasto.php:103
+msgid "Transfer orders made by this shipping method automatically to Nettivarasto."
+msgstr "Siirrä tällä toimitustavalla tehdyt tilaukset automaattisesti Nettivarastoon."
 
-#: nettivarasto.php:175
-msgid "Delivery Type"
-msgstr "Toimitustapa:"
+#: nettivarasto.php:107
+msgid "Nettivarasto Delivery Type"
+msgstr "Nettivaraston Toimitustapa"
 
-#: nettivarasto.php:177
-msgid ""
-"Set external code of the default Nettivarasto delivery type for this "
-"shipping method."
-msgstr "Aseta Nettivaraston koodi haluamallesi oletustoimitustavalle."
+#: nettivarasto.php:109
+msgid "Set external code of the Nettivarasto delivery type for this shipping method."
+msgstr "Aseta Nettivaraston koodi tälle toimitustavalle."
 
-#: nettivarasto.php:187
+#: nettivarasto.php:118
 msgid "Nettivarasto General Settings"
 msgstr "Nettivaraston yleiset asetukset"
 
-#: nettivarasto.php:189
-msgid ""
-"<p>The following are Nettivarasto general settings.</p><h4>Export</"
-"h4><p>Click <a href=\"?page=wc-settings&export_all=true\">here</a> to export "
-"all products to Nettivarasto.</p><h4>Update Orders and Products</h4><p>Click "
-"<a href=\"?page=wc-settings&get_latest_changes=true\">here</a> to update "
-"product and order info from Nettivarasto.</p>"
-msgstr ""
-"<p>Alla olevat ovat Nettivaraston yleisiä asetuksia.</p><h4>Vie</"
-"h4><p>Klikkaa <a href=\"?page=wc-settings&export_all=true\">tästä</a> "
-"viedäksesi tuotteet Nettivarastoon.</p><h4>Päivitä tilaukset ja tuotteet</"
-"h4><p>Kilkkaa <a href=\"?page=wc-settings&get_latest_changes=true\">tästä</"
-"a> päivittääksesi varastosaldot ja tilausten tilat Nettivarastosta.</p>"
+#: nettivarasto.php:120
+msgid "The following are Nettivarasto general settings."
+msgstr "Alla olevat ovat Nettivaraston yleisiä asetuksia."
 
-#: nettivarasto.php:193
+#: nettivarasto.php:121
+msgid "Export"
+msgstr "Vie"
+
+#: nettivarasto.php:122 nettivarasto.php:124
+msgid "Click here"
+msgstr "Klikkaa tästä"
+
+#: nettivarasto.php:122
+msgid "to export all products to Nettivarasto"
+msgstr "viedäksesi kaikki tuotteet Nettivarastoon"
+
+#: nettivarasto.php:123
+msgid "Update Orders and Products"
+msgstr "Tilausten ja Tuotetietojen Päivitys"
+
+#: nettivarasto.php:125
+msgid "to update product and order info from Nettivarasto"
+msgstr "päivittääksesi tuotteiden varastosaldot ja tilausten tilat Nettivarastosta"
+
+#: nettivarasto.php:128
+msgid "never"
+msgstr "ei koskaan"
+
+#: nettivarasto.php:141
+msgid "Latest successful update from Nettivarasto"
+msgstr "Viimeisin onnistunut päivitys Nettivarastosta"
+
+#: nettivarasto.php:146
 msgid "Merchant ID"
 msgstr "Kauppias ID"
 
-#: nettivarasto.php:194
+#: nettivarasto.php:147
 msgid "Insert Merchant ID from Nettivarasto"
 msgstr "Syötä Nettivarastolta saamasi kauppias ID"
 
-#: nettivarasto.php:200
+#: nettivarasto.php:153
 msgid "Secret Token"
 msgstr "Salainen avain"
 
-#: nettivarasto.php:201
+#: nettivarasto.php:154
 msgid "Insert Nettivarasto Secret token"
 msgstr "Syötä Nettivarastolta saamasi salainen avain"
 
-#: nettivarasto.php:222
+#: nettivarasto.php:160
+msgid "Deny product export"
+msgstr "Estä tuotteiden vienti"
+
+#: nettivarasto.php:161
+msgid "This option will deny the product export to Nettivarasto"
+msgstr "Tämä valinta estää tuotetietojen viennin Nettivarastoon"
+
+#: nettivarasto.php:179
 msgid "Supplier:"
 msgstr "Toimittaja:"
 
-#: nettivarasto.php:225
+#: nettivarasto.php:182
 msgid "Enter name of supplier for Nettivarasto."
 msgstr "Syötä tavarantoimittajan nimi."
 
-#: nettivarasto.php:231
+#: nettivarasto.php:188
 msgid "Supplier code:"
 msgstr "Tavarantoimittajan koodi:"
 
-#: nettivarasto.php:234
+#: nettivarasto.php:191
 msgid "Enter code of supplier for Nettivarasto."
 msgstr "Tavarantoimittajan koodi, joka lähetetään Nettivarastoon."
 
-#: nettivarasto.php:240
+#: nettivarasto.php:197
 msgid "Group:"
 msgstr "Tuoteryhmä:"
 
-#: nettivarasto.php:243
+#: nettivarasto.php:200
 msgid "Enter group of product for Nettivarasto."
 msgstr "Syötä Nettivarastoon lähetettävä tuoteryhmä."
 
-#: nettivarasto.php:249
+#: nettivarasto.php:206
 msgid "Purchase price:"
 msgstr "Sisäänostohinta:"
 
-#: nettivarasto.php:252
+#: nettivarasto.php:209
 msgid "Enter purchase for Nettivarasto."
 msgstr "Syötä sisäänostohinta, joka lähetetetään Nettivarastolle."
 
-#: nettivarasto.php:258
-msgid ""
-"Check if you do <strong>not</strong> want to export this product "
-"automatically to Nettivarasto."
-msgstr ""
-"Valitse, mikäli tämän tuotteen tietoja <strong>ei</strong> viedä "
-"Nettivarastoon."
+#: nettivarasto.php:215
+msgid "Check if you do <strong>not</strong> want to export this product automatically to Nettivarasto."
+msgstr "Valitse, mikäli tämän tuotteen tietoja <strong>ei</strong> viedä Nettivarastoon."
 
-#: nettivarasto.php:259
+#: nettivarasto.php:216
 msgid "Do not export to Nettivarasto"
 msgstr "Älä vie Nettivarastoon"
 
-#: nettivarasto.php:332
+#: nettivarasto.php:269
+msgid "No more product to export this order"
+msgstr "Ei tarpeeksi tuotteita tämän tilauksen lähettämiseksi"
+
+#: nettivarasto.php:292 nettivarasto.php:293
 msgid "Order transferred to Nettivarasto"
 msgstr "Tilaus siirretty Nettivarastoon"
 
-#: nettivarasto.php:337
-msgid "Error: "
-msgstr "Virhe:"
+#: nettivarasto.php:297
+msgid "Error"
+msgstr "Virhe"
 
-#: nettivarasto.php:514
+#: nettivarasto.php:298
+msgid "Send order again."
+msgstr "Lähetä tilaus uudestaan."
+
+#: nettivarasto.php:320
+msgid "Product export denied in the Nettivarasto settings."
+msgstr "Tuotteiden vienti kielletty Nettivaraston asetuksissa."
+
+#: nettivarasto.php:427
+msgid "Product export completed."
+msgstr "Tuotteiden vienti valmis."
+
+#: nettivarasto.php:468
 msgid "Send Order to Nettivarasto"
 msgstr "Lähetä tilaus Nettivarastoon"
 
-#: nettivarasto.php:535
-msgid "Nettivarasto change of status to SHIPPED. "
-msgstr "Nettivaraston status: LÄHETETTY"
+#: nettivarasto.php:503
+msgid "Nettivarasto change of status to SHIPPED."
+msgstr "Nettivaraston tila: SHIPPED."
 
-#: nettivarasto.php:536
-msgid "Tracking number: "
-msgstr "Seurantatunnus:"
+#: nettivarasto.php:504 nettivarasto.php:562 nettivarasto.php:570 nettivarasto.php:586
+msgid "Tracking code"
+msgstr "Seurantakoodi"
 
-#: nettivarasto.php:540
+#: nettivarasto.php:508
 msgid "Nettivarasto change of status to CANCELLED."
-msgstr "Nettivaraston status: PERUUTETTU."
+msgstr "Nettivaraston tila: CANCELLED."
 
-#: nettivarasto.php:543
+#: nettivarasto.php:511
 msgid "Nettivarasto change of status to COLLECTING."
-msgstr "Nettivaraston status: KERÄTÄÄN."
+msgstr "Nettivaraston tila: COLLECTING."
 
-#: nettivarasto.php:546
+#: nettivarasto.php:514
 msgid "Nettivarasto change of status to PENDING."
-msgstr "Nettivaraston status: ODOTTAA."
+msgstr "Nettivaraston tila: PENDING."
 
-#: nettivarasto.php:549
+#: nettivarasto.php:517
 msgid "Nettivarasto change of status to RESERVED."
-msgstr "Nettivaraston status: VARATTU."
+msgstr "Nettivaraston tila: RESERVED."
+
+#: nettivarasto.php:520
+msgid "Nettivarasto change of status to DRAFT."
+msgstr "Nettivaraston tila: DRAFT."
+
+#: nettivarasto.php:542
+msgid "Product and order data updated from Nettivarasto."
+msgstr "Tuotteiden ja tilausten tiedot päivitetty Nettivarastosta."
+
+#: nettivarasto.php:569 nettivarasto.php:585
+msgid "Track Your Shipment"
+msgstr "Seuraa lähetystäsi"
+
+#~ msgid "Tracking number"
+#~ msgstr "Seurantakoodi"
+
+#~ msgid "Tracking code:"
+#~ msgstr "Seurantakoodi:"
+
+#~ msgid "Nettivarasto change of status to SHIPPED. "
+#~ msgstr "Nettivaraston status: LÄHETETTY"
+
+#~ msgid "Tracking number: "
+#~ msgstr "Seurantatunnus:"
+
+#~ msgid "Delivery Type"
+#~ msgstr "Toimitustapa:"
+
+#~ msgid "Set external code of the default Nettivarasto delivery type for this shipping method."
+#~ msgstr "Aseta Nettivaraston koodi haluamallesi oletustoimitustavalle."
+
+#~ msgid ""
+#~ "<p>The following are Nettivarasto general settings.</p><h4>Export</h4><p>Click <a href=\"?page=wc-"
+#~ "settings&export_all=true\">here</a> to export all products to Nettivarasto.</p><h4>Update Orders "
+#~ "and Products</h4><p>Click <a href=\"?page=wc-settings&get_latest_changes=true\">here</a> to "
+#~ "update product and order info from Nettivarasto.</p>"
+#~ msgstr ""
+#~ "<p>Alla olevat ovat Nettivaraston yleisiä asetuksia.</p><h4>Vie</h4><p>Klikkaa <a href=\"?page=wc-"
+#~ "settings&export_all=true\">tästä</a> viedäksesi tuotteet Nettivarastoon.</p><h4>Päivitä tilaukset "
+#~ "ja tuotteet</h4><p>Kilkkaa <a href=\"?page=wc-settings&get_latest_changes=true\">tästä</a> "
+#~ "päivittääksesi varastosaldot ja tilausten tilat Nettivarastosta.</p>"
+
+#~ msgid "Error: "
+#~ msgstr "Virhe:"

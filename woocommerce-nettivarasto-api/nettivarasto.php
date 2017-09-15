@@ -5,7 +5,7 @@
  * Description: Integrate WooCommerce with Nettivarasto (http://nettivarasto.fi).
  * Author: OGOShip / Nettivarasto
  * Author URI: http://nettivarasto.fi
- * Version: 2.0.0
+ * Version: 3.0.0
  * Text Domain: wc-nv-api
  * Domain Path: /i18n/languages/
  *
@@ -104,9 +104,9 @@ class nv_wc_api {
                         'default' => 'no',
                         ); 
       $fields['nettivarasto_delivery_type_id'] = array(
-                        'title'   => __( 'Delivery Type', 'wc-nv-api' ),
+                        'title'   => __( 'Nettivarasto Delivery Type', 'wc-nv-api' ),
                         'type'    => 'input',
-                        'label'   => __( 'Set external code of the default Nettivarasto delivery type for this shipping method.', 'wc-nv-api' ),
+                        'desc_tip'   => __( 'Set external code of the Nettivarasto delivery type for this shipping method.', 'wc-nv-api' ),
                         'default' => '',
                         );   
       return $fields;
@@ -117,9 +117,31 @@ class nv_wc_api {
     $updated_settings[] = array(
         'name'    => __( 'Nettivarasto General Settings', 'wc-nv-api' ),
         'type'    => 'title',
-        'desc'    => __('<p>The following are Nettivarasto general settings.</p><h4>Export</h4><p>Click <a href="?page=wc-settings&export_all=true">here</a> to export all products to Nettivarasto.</p><h4>Update Orders and Products</h4><p>Click <a href="?page=wc-settings&get_latest_changes=true">here</a> to update product and order info from Nettivarasto.</p>', 'wc-nv-api'),
+        'desc'    => '<p>'.__('The following are Nettivarasto general settings.', 'wc-nv-api').'</p><h4>'
+		.__('Export', 'wc-nv-api').'</h4><p><a href="?page=wc-settings&export_all=true">'
+		.__('Click here', 'wc-nv-api').'</a> '.__('to export all products to Nettivarasto', 'wc-nv-api')
+		.'.</p><h4>'.__('Update Orders and Products', 'wc-nv-api')
+		.'</h4><p><a href="?page=wc-settings&get_latest_changes=true">'.__('Click here', 'wc-nv-api')
+		.'</a> '.__('to update product and order info from Nettivarasto', 'wc-nv-api').'.</p>',
         'id'    => 'nettivarasto_general_settings'
     );
+	$timestampstr = __('never', 'wc-nv-api');
+	if(get_option('nettivarasto_latest_changes_timestamp'))
+	{
+	    $tsdate = new DateTime();
+	    $tsdate->setTimestamp(get_option('nettivarasto_latest_changes_timestamp'));
+	    try {
+		$tsdate->setTimezone(new DateTimeZone(get_option('timezone_string', "UTC")));
+	    } catch(Exception $e) {}
+
+	    $timestampstr = $tsdate->format('Y-m-d H:i:s');
+	}
+    $updated_settings[] = array(
+        'type'    => 'title',
+        'desc'    => __('Latest successful update from Nettivarasto', 'wc-nv-api') . ': ' . $timestampstr,
+        'id'    => 'nettivarasto_latest_success_time'
+    );
+
     $updated_settings[] = array(
       'name'      => __( 'Merchant ID', 'wc-nv-api' ),
       'desc_tip'  => __( 'Insert Merchant ID from Nettivarasto', 'wc-nv-api' ),
@@ -135,13 +157,12 @@ class nv_wc_api {
       'css'       => 'min-width:300px;'
     );
 	 $updated_settings[] = array(
-      'name'      => __( 'Deny product export', 'deny-export-product' ),
-      'desc_tip'  => __( 'This option will deny the product export to Nettivarasto', 'deny-export-product' ),
+      'name'      => __( 'Deny product export', 'wc-nv-api' ),
+      'desc_tip'  => __( 'This option will deny the product export to Nettivarasto', 'wc-nv-api' ),
       'id'        => 'woocommerce_deny_export_product',
       'type'      => 'checkbox',
       'css'       => 'min-width:300px;'
     );
-      
     $updated_settings[] = array( 'type' => 'sectionend', 'id' => 'nettivarasto_general_settings' ); 
     return $updated_settings;
   }
@@ -230,15 +251,16 @@ class nv_wc_api {
     $WC_order = new WC_Order($order_id);
     $shipping_methods = $WC_order->get_shipping_methods(); 
     foreach ( $shipping_methods as $shipping_method ) {
-      $method_id = ($shipping_method[item_meta][method_id][0]);
+	$method_id = $shipping_method->get_method_id();
     }
 	
 
     $shipping_method_options = get_option('woocommerce_'.str_replace(':','_',$method_id).'_settings');
 	
-      $order = new NettivarastoAPI_Order($this->api,$order_id);
+      $key = $WC_order->get_order_key();
+      $key = str_replace('wc_order_', '', $key);
+      $order = new NettivarastoAPI_Order($this->api, $order_id . '-' . $key);
       $nettivarasto_shipping_method=$shipping_method_options['nettivarasto_delivery_type_id'];
-      $order_number=$order_id;
       $index = 0;
 	  $strTotalProducts =	count($WC_order->get_items());	
       foreach($WC_order->get_items() as $item) {
@@ -248,31 +270,32 @@ class nv_wc_api {
 				 return;
 		  }elseif(!( get_post_meta($id, '_nettivarasto_no_export', true) ) == 'yes'){	  
 			  $order->setOrderLineCode( $index, ($product->get_sku()) );
-			  $order->setOrderLineQuantity( $index, ($item[qty]));
+			  $order->setOrderLineQuantity( $index, ($item['qty']));
 			  $index++;
 		  }	  
 	   	 
       }
 
-      $order->setPriceTotal($WC_order->order_total);
-      $order->setCustomerName($WC_order->shipping_first_name.' '.$WC_order->shipping_last_name);
-      $order->setCustomerAddress1($WC_order->shipping_address_1);
-      $order->setCustomerAddress2($WC_order->shipping_address_2);
-      $order->setCustomerCity($WC_order->shipping_city);
-      $order->setCustomerCountry($WC_order->shipping_country);
+      $order->setPriceTotal($WC_order->get_total());
+      $order->setCustomerName($WC_order->get_shipping_first_name().' '.$WC_order->get_shipping_last_name());
+      $order->setCustomerAddress1($WC_order->get_shipping_address_1());
+      $order->setCustomerAddress2($WC_order->get_shipping_address_2());
+      $order->setCustomerCity($WC_order->get_shipping_city());
+      $order->setCustomerCountry($WC_order->get_shipping_country());
       $order->setCustomerEmail( get_post_meta($order_id, '_billing_email', true) );
       $order->setCustomerPhone( get_post_meta($order_id, '_billing_phone', true) );
-      $order->setCustomerZip($WC_order->shipping_postcode);
-	  $order->setComments($WC_order->customer_note);	  
+      $order->setCustomerZip($WC_order->get_shipping_postcode());
+      $order->setComments($WC_order->get_customer_note());	  
   
       $order->setShipping($nettivarasto_shipping_method);
       if ( $order->save() ) {
-          $WC_order->add_order_note(__('Order transferred to Nettivarasto', 'nv-woocommerce-api'), 0);
-          $this->notice = 'Order successfully transferred to Nettivarasto.';
+          $WC_order->add_order_note(__('Order transferred to Nettivarasto', 'wc-nv-api'), 0);
+          $this->notice = __('Order transferred to Nettivarasto', 'wc-nv-api');
           return;
       }
       else {
-          $WC_order->add_order_note(__('Error: '.$this->api->getLastError().' <a href="?post='.$WC_order->id.'&action=edit&send_to_nv=true">Send order again.</a>', 'nv-woocommerce-api'), 0);
+          $WC_order->add_order_note(__('Error', 'wc-nv-api').': '.$this->api->getLastError().' <a href="?post='
+			. $WC_order->get_id().'&action=edit&send_to_nv=true">'.__('Send order again.', 'wc-nv-api').'</a>', 0);
           wp_mail( get_option( 'admin_email' ), 'Error - Nettivarasto API', $this->api->getLastError() ); 
       return; 
       }    
@@ -294,7 +317,7 @@ class nv_wc_api {
   
   function update_all_products() {
 	if($this->denyExport=="yes"){
-		$this->notice = 'Product export denied in the Nettivarasto settings.';
+		$this->notice = __('Product export denied in the Nettivarasto settings.', 'wc-nv-api');
 		return;
 	}
 
@@ -324,13 +347,13 @@ class nv_wc_api {
       );
 	$_tax = new WC_Tax();
     foreach ($products as $product) {
-      $WC_product = get_product($product->ID);
+      $WC_product = wc_get_product($product->ID);
       //We only allow export of simple and variable products. 
-      if( !( get_post_meta($WC_product->id, '_nettivarasto_no_export', true) ) == 'yes' && ( $WC_product->product_type == 'simple' || $WC_product->product_type == 'variable' ) )  {
+      if( !( get_post_meta($WC_product->get_id(), '_nettivarasto_no_export', true) ) == 'yes' && ( $WC_product->get_type() == 'simple' || $WC_product->get_type() == 'variable' ) )  {
         if ( $WC_product->has_child() ) {
           $children = $WC_product->get_children();
           foreach ( $children as $child ) {
-            $WC_child_product = get_product($child);
+            $WC_child_product = wc_get_product($child);
             $variations = implode( $WC_child_product->get_variation_attributes(), ',' );
             $PictureUrl = wp_get_attachment_image_src( $WC_child_product->get_image_id(), 'shop_thumbnail' );
             
@@ -339,21 +362,21 @@ class nv_wc_api {
 				'Code' => $WC_child_product->get_sku(),
 				'Name' => $product->post_title.' ('.$variations.')',
 				'Description' => strip_tags($WC_child_product->post_content),
-				'InfoUrl' => get_permalink($WC_child_product->id),
-				'SalesPrice' => $WC_child_product->get_price_including_tax(),
+				'InfoUrl' => get_permalink($WC_child_product->get_id()),
+				'SalesPrice' => wc_get_price_including_tax($WC_child_product),
 				'Weight'=> $WC_product->get_weight(),
 				'Height'=> $WC_product->get_height(),
 				'Width'=> $WC_product->get_width(),
 				'Depth'=> $WC_product->get_length(),
-				'VatPercentage'=> $tax,
+				'VatPercentage'=> $_tax->get_rate_percent($WC_child_product->get_tax_class()),
 				'Currency' => get_woocommerce_currency()
 	          );
             //Nettivarasto does not handle well null values, so we add keys to array only if they have values
             if ( $PictureUrl ) $product_array['PictureUrl'] = $PictureUrl;
-            if ( get_post_meta($WC_product->id, '_nettivarasto_supplier_name', true) ) $product_array['Supplier'] = get_post_meta($WC_product->id, '_nettivarasto_supplier_name', true);
-            if ( get_post_meta($WC_product->id, '_nettivarasto_supplier_code', true) ) $product_array['SupplierCode'] = get_post_meta($WC_product->id, '_nettivarasto_supplier_code', true);
-            if ( get_post_meta($WC_product->id, '_nettivarasto_group', true) ) $product_array['Group'] = get_post_meta($WC_product->id, '_nettivarasto_group', true);
-            if ( get_post_meta($WC_product->id, '_nettivarasto_purchase_price', true) ) $product_array['Price'] = get_post_meta($WC_product->id, '_nettivarasto_purchase_price', true);
+            if ( get_post_meta($WC_product->get_id(), '_nettivarasto_supplier_name', true) ) $product_array['Supplier'] = get_post_meta($WC_product->get_id(), '_nettivarasto_supplier_name', true);
+            if ( get_post_meta($WC_product->get_id(), '_nettivarasto_supplier_code', true) ) $product_array['SupplierCode'] = get_post_meta($WC_product->get_id(), '_nettivarasto_supplier_code', true);
+            if ( get_post_meta($WC_product->get_id(), '_nettivarasto_group', true) ) $product_array['Group'] = get_post_meta($WC_product->get_id(), '_nettivarasto_group', true);
+            if ( get_post_meta($WC_product->get_id(), '_nettivarasto_purchase_price', true) ) $product_array['Price'] = get_post_meta($WC_product->get_id(), '_nettivarasto_purchase_price', true);
             //Add product array to array
             $NV_products['Products']['Product'][] = $product_array;
             //Reset variables just in case
@@ -369,19 +392,19 @@ class nv_wc_api {
             'Code' => $WC_product->get_sku(),
             'Name' => $product->post_title,
             'Description' => strip_tags($product->post_content),
-            'InfoUrl' => get_permalink($WC_product->id),
-            'SalesPrice' => $WC_product->get_price_including_tax(),
+            'InfoUrl' => get_permalink($WC_product->get_id()),
+            'SalesPrice' => wc_get_price_including_tax($WC_product),
 			'Weight'=> $WC_product->get_weight(),
 			'Height'=> $WC_product->get_height(),
 			'Width'=> $WC_product->get_width(),
 			'Depth'=> $WC_product->get_length(),
-			'VatPercentage'=> $tax,
+			'VatPercentage'=> $_tax->get_rate_percent($WC_product->get_tax_class()),
             'Currency' => get_woocommerce_currency()
           );
-          if ( get_post_meta($WC_product->id, '_nettivarasto_supplier_name', true) ) $product_array['Supplier'] = get_post_meta($WC_product->id, '_nettivarasto_supplier_name', true);
-          if ( get_post_meta($WC_product->id, '_nettivarasto_supplier_code', true) ) $product_array['SupplierCode'] = get_post_meta($WC_product->id, '_nettivarasto_supplier_code', true);
-          if ( get_post_meta($WC_product->id, '_nettivarasto_group', true) ) $product_array['Group'] = get_post_meta($WC_product->id, '_nettivarasto_group', true);
-          if ( get_post_meta($WC_product->id, '_nettivarasto_purchase_price', true) ) $product_array['Price'] = get_post_meta($WC_product->id, '_nettivarasto_purchase_price', true);
+          if ( get_post_meta($WC_product->get_id(), '_nettivarasto_supplier_name', true) ) $product_array['Supplier'] = get_post_meta($WC_product->get_id(), '_nettivarasto_supplier_name', true);
+          if ( get_post_meta($WC_product->get_id(), '_nettivarasto_supplier_code', true) ) $product_array['SupplierCode'] = get_post_meta($WC_product->get_id(), '_nettivarasto_supplier_code', true);
+          if ( get_post_meta($WC_product->get_id(), '_nettivarasto_group', true) ) $product_array['Group'] = get_post_meta($WC_product->get_id(), '_nettivarasto_group', true);
+          if ( get_post_meta($WC_product->get_id(), '_nettivarasto_purchase_price', true) ) $product_array['Price'] = get_post_meta($WC_product->get_id(), '_nettivarasto_purchase_price', true);
           if ( $PictureUrl ) $product_array['PictureUrl'] = $PictureUrl;
           $NV_products['Products']['Product'][] = $product_array;
         }
@@ -399,9 +422,9 @@ class nv_wc_api {
     $response = $this->api->updateAllProducts($NV_products);
     if ( $response ) {
       if ( ! ( (string)$response['Response']['Info']['@Success'] == 'true' ) ) {
-         $this->error = $response['Response']['Info']['@Error'];
+        $this->error = $response['Response']['Info']['@Error'];
       } else {
-        $this->notice = 'Product export completed.';
+		$this->notice = __('Product export completed.', 'wc-nv-api');
       }
     }
   }
@@ -442,12 +465,12 @@ class nv_wc_api {
   }
 
   function add_order_meta_box_actions($order) {
-    $actions['nv_send_order_to_nettivarasto'] = __( 'Send Order to Nettivarasto', 'nv-woocommerce-api' );
+    $actions['nv_send_order_to_nettivarasto'] = __( 'Send Order to Nettivarasto', 'wc-nv-api' );
     return $actions;
   }
   
   function process_action_nv_send_order_to_nettivarasto( $order ) {
-    $this->save_order_to_nettivarasto($order->id);
+    $this->save_order_to_nettivarasto($order->get_id());
   }
 
   function get_latest_changes() {
@@ -458,26 +481,43 @@ class nv_wc_api {
       
     if($latestOrders) {
         foreach($latestOrders as $latestOrder) {
-                          if( get_post_status ( $latestOrder->getReference() ) ) {
-                $WC_order = new WC_order( $latestOrder->getReference() );
+			if(!preg_match('/^(?<id>\d+)-?(?<key>[a-z0-9]+)?$/', $latestOrder->getReference(), $matches)){
+				continue;
+			}
+			$order_id = 0;
+			if(isset($matches['key'])){
+				$order_id = wc_get_order_id_by_order_key('wc_order_' . $matches['key']);
+			}
+			if(isset($matches['id']) && $order_id == 0)
+			{
+				$order_id = $matches['id'];
+			}
+			if($order_id == 0){
+				continue;
+			}
+            if( get_post_status ( $order_id ) ) {
+                $WC_order = new WC_order( $order_id );
                 switch ( $latestOrder->getStatus() ) {
                     case  'SHIPPED': 
-                        update_post_meta( $latestOrder->getReference(), 'nettivarasto_tracking', $latestOrder->getTrackingNumber() );
-                        $WC_order->add_order_note(__('Nettivarasto change of status to SHIPPED. ', 'nv-woocommerce-api'), 0);
-                        $WC_order->add_order_note(__('Tracking number: ', 'nv-woocommerce-api').$latestOrder->getTrackingNumber(), 0);
+                        update_post_meta( $order_id, 'nettivarasto_tracking', $latestOrder->getTrackingNumber() );
+                        $WC_order->add_order_note(__('Nettivarasto change of status to SHIPPED.', 'wc-nv-api'), 0);
+                        $WC_order->add_order_note(__('Tracking code', 'wc-nv-api').': '.$latestOrder->getTrackingNumber(), 0);
                         $WC_order->update_status('completed');
                         break;
                     case  'CANCELLED':
-                        $WC_order->add_order_note(__('Nettivarasto change of status to CANCELLED.', 'nv-woocommerce-api'), 0);
+                        $WC_order->add_order_note(__('Nettivarasto change of status to CANCELLED.', 'wc-nv-api'), 0);
                         break;
                     case  'COLLECTING':
-                        $WC_order->add_order_note(__('Nettivarasto change of status to COLLECTING.', 'nv-woocommerce-api'), 0);
+                        $WC_order->add_order_note(__('Nettivarasto change of status to COLLECTING.', 'wc-nv-api'), 0);
                         break;
                     case  'PENDING':
-                        $WC_order->add_order_note(__('Nettivarasto change of status to PENDING.', 'nv-woocommerce-api'), 0);
+                        $WC_order->add_order_note(__('Nettivarasto change of status to PENDING.', 'wc-nv-api'), 0);
                         break;
                     case  'RESERVED':
-                        $WC_order->add_order_note(__('Nettivarasto change of status to RESERVED.', 'nv-woocommerce-api'), 0);
+                        $WC_order->add_order_note(__('Nettivarasto change of status to RESERVED.', 'wc-nv-api'), 0);
+                        break;
+                    case  'DRAFT':
+                        $WC_order->add_order_note(__('Nettivarasto change of status to DRAFT.', 'wc-nv-api'), 0);
                         break;
                 }
             }
@@ -488,9 +528,9 @@ class nv_wc_api {
       foreach($latestProducts as $latestProduct) {
           $WC_product = $this->get_product_by_sku( $latestProduct->getCode() );
               if($WC_product) {
-                  $WC_product->set_stock( $latestProduct->getStock(), 'set' );
+                  wc_update_product_stock($WC_product, $latestProduct->getStock(), 'set' );
                   if ( $woocommerce_wpml ) {
-                    $woocommerce_wpml->products->sync_post_action( $WC_product->id, $WC_product );
+                    $woocommerce_wpml->products->sync_post_action( $WC_product->get_id(), $WC_product );
                   }
                   if ( $latestProduct->getStock() ) {
                   $WC_product->set_stock_status( 'instock' );
@@ -499,13 +539,13 @@ class nv_wc_api {
       }
     }
     update_option('nettivarasto_latest_changes_timestamp', $this->api->getTimestamp());
-    $this->notice = __('Product and order data updated from Nettivarasto.', 'nv-woocommerce-api');
+    $this->notice = __('Product and order data updated from Nettivarasto.', 'wc-nv-api');
   }
   
   function get_product_by_sku( $sku ) {
       global $wpdb;
       $product_id = $wpdb->get_var( $wpdb->prepare( "SELECT post_id FROM $wpdb->postmeta WHERE meta_key='_sku' AND meta_value='%s' LIMIT 1", $sku ) );
-      if ( $product_id ) return get_product( $product_id );
+      if ( $product_id ) return wc_get_product( $product_id );
       return null;
   }
 
@@ -517,17 +557,17 @@ class nv_wc_api {
   public function email_tracking_code( $order, $sent_to_admin, $plain_text ) {
     if ( $plain_text ) {
       //Do this if we have a plain email
-      $tracking_code = get_post_meta( $order->id, 'nettivarasto_tracking', true );
+      $tracking_code = get_post_meta( $order->get_id(), 'nettivarasto_tracking', true );
       if($tracking_code) {
-        echo "\n".__('Tracking code:').' '.$tracking_code."\n";
+        echo "\n".__('Tracking code', 'wc-nv-api').': '.$tracking_code."\n";
       }
     } else {
       //Do this if we have a normal email
-      $tracking_code = get_post_meta( $order->id, 'nettivarasto_tracking', true );
+      $tracking_code = get_post_meta( $order->get_id(), 'nettivarasto_tracking', true );
       if($tracking_code) {
         echo '<div>';
           echo '<h3>'.__('Track Your Shipment', 'wc-nv-api').'</h3>';
-          echo '<p>'.__('Tracking code:', 'wc-nv-api').' '.$tracking_code.'</p>';
+          echo '<p>'.__('Tracking code', 'wc-nv-api').': '.$tracking_code.'</p>';
         echo '</div>';
       }
     }
@@ -543,7 +583,7 @@ class nv_wc_api {
     if($tracking_code) {
       echo '<div>';
         echo '<h3>'.__('Track Your Shipment', 'wc-nv-api').'</h3>';
-        echo '<p>'.__('Tracking code:', 'wc-nv-api').' '.$tracking_code.'</p>';
+        echo '<p>'.__('Tracking code', 'wc-nv-api').': '.$tracking_code.'</p>';
       echo '</div>';
     }
   }
