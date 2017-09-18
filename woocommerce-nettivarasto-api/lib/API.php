@@ -60,7 +60,13 @@ class NettivarastoAPI
   
   function latestChanges(&$products, &$orders)
   {
-    $restClient = new NettivarastoAPI_RESTclient($this, 'GET', '/LatestChanges', array('order','latestchanges', $this->timestamp));
+    // don't try to get changes beyond 7 days
+    $now = new DateTime('NOW');
+    if($now->getTimestamp() - 604800 > $this->timestamp){ // 7*24*60*60
+      $restClient = new NettivarastoAPI_RESTclient($this, 'GET', '/LatestChanges', array('order','latestchanges', $now->getTimestamp() - 604800));
+    } else {
+      $restClient = new NettivarastoAPI_RESTclient($this, 'GET', '/LatestChanges', array('order','latestchanges', $this->timestamp));
+    }
     $restClient->addGetParameter('TimeStamp', $this->timestamp);
     $resultArray = array();
     $success = $restClient->execute($resultArray);
