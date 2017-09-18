@@ -5,7 +5,7 @@
  * Description: Integrate WooCommerce with Nettivarasto (http://nettivarasto.fi).
  * Author: OGOShip / Nettivarasto
  * Author URI: http://nettivarasto.fi
- * Version: 3.0.0
+ * Version: 3.2.0
  * Text Domain: wc-nv-api
  * Domain Path: /i18n/languages/
  *
@@ -262,9 +262,10 @@ class nv_wc_api {
       $order = new NettivarastoAPI_Order($this->api, $order_id . '-' . $key);
       $nettivarasto_shipping_method=$shipping_method_options['nettivarasto_delivery_type_id'];
       $index = 0;
-	  $strTotalProducts =	count($WC_order->get_items());	
+	  $strTotalProducts =	count($WC_order->get_items());
       foreach($WC_order->get_items() as $item) {
-		  $product=new WC_Product_Variable($id=($item['variation_id'] ? $item['variation_id'] : $item['product_id']));
+		  $product=new WC_Product_Variation($id=($item['variation_id'] ? $item['variation_id'] : $item['product_id']));
+		  //$product=new WC_Product($id=($item['product_id'] ? $item['product_id'] : $item['variation_id']));
 		  if(( get_post_meta($id, '_nettivarasto_no_export', true) ) == 'yes' && $strTotalProducts==1){
 		  		 $WC_order->add_order_note(__('No more product to export this order'), 0);
 				 return;
