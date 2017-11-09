@@ -5,7 +5,7 @@
  * Description: Integrate WooCommerce with Nettivarasto (http://nettivarasto.fi).
  * Author: OGOShip / Nettivarasto
  * Author URI: http://nettivarasto.fi
- * Version: 3.2.1
+ * Version: 3.2.2
  * Text Domain: wc-nv-api
  * Domain Path: /i18n/languages/
  *
@@ -497,7 +497,15 @@ class nv_wc_api {
 				continue;
 			}
             if( get_post_status ( $order_id ) ) {
+              $WC_order = null;
+              try {
                 $WC_order = new WC_order( $order_id );
+              } catch(Exception $e){
+                //echo("Error loading order:" . $order_id);
+              }
+                if($WC_order == null){
+                  continue;
+                }
                 switch ( $latestOrder->getStatus() ) {
                     case  'SHIPPED': 
                         update_post_meta( $order_id, 'nettivarasto_tracking', $latestOrder->getTrackingNumber() );
