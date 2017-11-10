@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce Nettivarasto API\n"
-"POT-Creation-Date: 2017-09-15 17:14+0300\n"
-"PO-Revision-Date: 2017-09-15 17:17+0300\n"
+"POT-Creation-Date: 2017-11-10 11:30+0200\n"
+"PO-Revision-Date: 2017-11-10 12:01+0200\n"
 "Last-Translator: Ilkka Loppi <loppi@iki.fi>\n"
 "Language-Team: \n"
 "Language: fi\n"
@@ -161,6 +161,14 @@ msgstr "Tuotteiden vienti valmis."
 #: nettivarasto.php:468
 msgid "Send Order to Nettivarasto"
 msgstr "Lähetä tilaus Nettivarastoon"
+
+#: nettivarasto.php:504
+msgid "Error loading order"
+msgstr "Virhe ladattaessa tilausta"
+
+#: nettivarasto.php:505
+msgid "from WooCommerce, skipping"
+msgstr "WooCommercesta, ohitetaan"
 
 #: nettivarasto.php:503
 msgid "Nettivarasto change of status to SHIPPED."
