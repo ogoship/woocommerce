@@ -264,14 +264,20 @@ class nv_wc_api {
       $index = 0;
 	  $strTotalProducts =	count($WC_order->get_items());
       foreach($WC_order->get_items() as $item) {
-		  $product=new WC_Product_Variation($id=($item['variation_id'] ? $item['variation_id'] : $item['product_id']));
-		  //$product=new WC_Product($id=($item['product_id'] ? $item['product_id'] : $item['variation_id']));
+        if($item['variation_id']){
+          $id = $item['variation_id'];
+          $product=new WC_Product_Variation($id);
+        } else {
+          $id = $item['product_id'];
+          $product=wc_get_product($id);
+        }
 		  if(( get_post_meta($id, '_nettivarasto_no_export', true) ) == 'yes' && $strTotalProducts==1){
 		  		 $WC_order->add_order_note(__('No more product to export this order'), 0);
 				 return;
 		  }elseif(!( get_post_meta($id, '_nettivarasto_no_export', true) ) == 'yes'){	  
 			  $order->setOrderLineCode( $index, ($product->get_sku()) );
 			  $order->setOrderLineQuantity( $index, ($item['qty']));
+			  $order->setOrderLinePrice( $index, $product->get_price());
 			  $index++;
 		  }	  
 	   	 
@@ -361,8 +367,8 @@ class nv_wc_api {
             //Declare array here in order to add conditional 
 			$product_array = array(
 				'Code' => $WC_child_product->get_sku(),
-				'Name' => $product->post_title.' ('.$variations.')',
-				'Description' => strip_tags($WC_child_product->post_content),
+				'Name' => $WC_child_product->get_name().' ('.$variations.')',
+				'Description' => strip_tags($WC_child_product->get_description()),
 				'InfoUrl' => get_permalink($WC_child_product->get_id()),
 				'SalesPrice' => wc_get_price_including_tax($WC_child_product),
 				'Weight'=> $WC_product->get_weight(),
@@ -391,8 +397,8 @@ class nv_wc_api {
           $PictureUrl = wp_get_attachment_image_src( $WC_product->get_image_id(), 'shop_thumbnail' );
           $product_array = array(
             'Code' => $WC_product->get_sku(),
-            'Name' => $product->post_title,
-            'Description' => strip_tags($product->post_content),
+            'Name' => $WC_product->get_name(),
+            'Description' => strip_tags($WC_product->get_description()),
             'InfoUrl' => get_permalink($WC_product->get_id()),
             'SalesPrice' => wc_get_price_including_tax($WC_product),
 			'Weight'=> $WC_product->get_weight(),

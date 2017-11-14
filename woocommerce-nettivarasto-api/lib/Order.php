@@ -354,6 +354,22 @@ class NettivarastoAPI_Order extends NettivarastoAPI_Object
   }
   
   /**
+   * Get price of products on order line.
+   */
+  function getOrderLinePrice($index)
+  {
+    return $this->getAttribute("OrderLines::OrderLine[$index]::UnitPrice");
+  }
+
+  /**
+   * Set Price of products on order line.
+   */
+  function setOrderLinePrice($index, $value)
+  {
+    $this->setAttribute("OrderLine[$index]::UnitPrice", $value);
+  }
+  
+  /**
    * Get documents.
    * 
    * @return array Key-value pairs of document names and urls.
