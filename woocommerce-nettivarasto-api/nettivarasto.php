@@ -5,7 +5,7 @@
  * Description: Integrate WooCommerce with Nettivarasto (http://nettivarasto.fi).
  * Author: OGOShip / Nettivarasto
  * Author URI: https://www.ogoship.com
- * Version: 3.2.4
+ * Version: 3.2.5
  * Text Domain: ogoship-nettivarasto-api-for-woocommerce
  * Domain Path: /i18n/languages/
  *
