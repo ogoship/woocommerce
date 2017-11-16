@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce Nettivarasto API\n"
-"POT-Creation-Date: 2017-11-10 11:30+0200\n"
-"PO-Revision-Date: 2017-11-10 12:01+0200\n"
+"POT-Creation-Date: 2017-11-16 11:36+0200\n"
+"PO-Revision-Date: 2017-11-16 11:45+0200\n"
 "Last-Translator: Ilkka Loppi <loppi@iki.fi>\n"
 "Language-Team: \n"
 "Language: fi\n"
@@ -134,9 +134,9 @@ msgstr "Valitse, mikäli tämän tuotteen tietoja <strong>ei</strong> viedä Net
 msgid "Do not export to Nettivarasto"
 msgstr "Älä vie Nettivarastoon"
 
-#: nettivarasto.php:269
-msgid "No more product to export this order"
-msgstr "Ei tarpeeksi tuotteita tämän tilauksen lähettämiseksi"
+#: nettivarasto.php:283
+msgid "No products in order to export"
+msgstr "Tilauksessa ei tuotteita vietäväksi"
 
 #: nettivarasto.php:292 nettivarasto.php:293
 msgid "Order transferred to Nettivarasto"
