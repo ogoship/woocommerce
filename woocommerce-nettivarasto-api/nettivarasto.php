@@ -5,7 +5,7 @@
  * Description: Integrate WooCommerce with Nettivarasto (http://nettivarasto.fi).
  * Author: OGOShip / Nettivarasto
  * Author URI: https://www.ogoship.com
- * Version: 3.2.5
+ * Version: 3.2.6
  * Text Domain: ogoship-nettivarasto-api-for-woocommerce
  * Domain Path: /i18n/languages/
  *
@@ -60,6 +60,7 @@ class nv_wc_api {
 
         add_action( 'woocommerce_view_order', array( $this, 'view_order_tracking_code' ), 1 );
         add_action( 'woocommerce_email_order_meta', array( $this, 'email_tracking_code' ), 10, 3 );
+        add_action('woocommerce_settings_saved', array($this, 'check_latest_changes_hook'));
     } 
     function activate_nettivarasto() {
       wp_schedule_event( current_time( 'timestamp', true ), 'hourly', 'get_latest_changes_hook' );
@@ -67,6 +68,22 @@ class nv_wc_api {
 
     function deactivate_nettivarasto() {
       wp_clear_scheduled_hook( 'get_latest_changes_hook' );
+    }
+
+    function check_latest_changes_hook()
+    {
+        if(get_option('woocommerce_nettivarasto_hourly_updates') != 'yes')
+        {
+            if(wp_next_scheduled( 'get_latest_changes_hook' ))
+            {
+                $this->deactivate_nettivarasto();
+            }
+        } else {
+            if(!wp_next_scheduled( 'get_latest_changes_hook' ))
+            {
+                $this->activate_nettivarasto();
+            }
+        }
     }
 
     function init_nettivarasto(){
@@ -326,6 +343,14 @@ class nv_wc_api {
       'type'      => 'checkbox',
       'css'       => 'min-width:300px;'
     );
+	$updated_settings[] = array(
+      'name'      => __( 'Hourly order status and product stock updates on/off', 'ogoship-nettivarasto-api-for-woocommerce' ),
+      'desc_tip'  => __( 'Uncheck to disable automatic hourly retrieval of latest order status and product stock level changes on/off.', 'ogoship-nettivarasto-api-for-woocommerce' ),
+      'id'        => 'woocommerce_nettivarasto_hourly_updates',
+      'type'      => 'checkbox',
+      'default'   => 'yes',
+      'css'       => 'min-width:300px;'
+    );
     $updated_settings[] = array( 'type' => 'sectionend', 'id' => 'nettivarasto_general_settings' ); 
     return $updated_settings;
   }
@@ -485,7 +510,6 @@ class nv_wc_api {
       }    
 
   }
-
 
   function get_all_products() {
       $products = $this->api->getAllProducts();
