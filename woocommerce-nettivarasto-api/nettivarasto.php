@@ -44,6 +44,7 @@ class nv_wc_api {
         $this->merchantID = get_option('woocommerce_nettivarasto_merchant_id');
         $this->secretToken = get_option('woocommerce_nettivarasto_secret_token');
 		$this->denyExport = get_option('woocommerce_deny_export_product');
+		$this->checkDuplicateSKU = get_option('woocommerce_check_duplicate_sku');
         $this->api = new NettivarastoAPI($this->merchantID, $this->secretToken);
         $this->api->setTimestamp( get_option('nettivarasto_latest_changes_timestamp') );
 
@@ -90,6 +91,165 @@ class nv_wc_api {
       if( @$_GET['export_all'] && is_admin()) {
          $this->update_all_products();
       }
+	  if( @$_GET['sku_duplicate'] && is_admin()) {
+		$products = $this->get_all_duplicate_sku_products();
+		
+		$productsArray = array();
+		
+		foreach($products['Products'] as $key=> $value){
+			if(!empty($value['Code'])){
+				$productsArray[] = $value['Code'];
+			}
+		}	 
+
+		$arr_unique = array_unique($productsArray);
+		$arr_duplicates = array_diff_assoc($productsArray, $arr_unique);
+		?>
+		<style>
+			.tableClass {
+			  border: 1px solid #ccc;
+			  border-collapse: collapse;
+			  margin: 0;
+			  padding: 0;
+			  width: 100%;
+			  table-layout: fixed;
+			}			
+			.tableClass tr {
+			  background: #f8f8f8;
+			  border: 1px solid #ddd;
+			  padding: .35em;
+			}
+			.tableClass th,
+			.tableClass td {
+			  padding: .625em;
+			  text-align: center;
+			}
+			.tableClass th {
+			  font-size: .85em;
+			  letter-spacing: .1em;
+			  text-transform: uppercase;
+			}
+			@media screen and (max-width: 600px) {
+			  .tableClass {
+				border: 0;
+			  }
+			  .tableClass thead {
+				border: none;
+				clip: rect(0 0 0 0);
+				height: 1px;
+				margin: -1px;
+				overflow: hidden;
+				padding: 0;
+				position: absolute;
+				width: 1px;
+			  }
+			  .tableClass tr {
+				border-bottom: 3px solid #ddd;
+				display: block;
+				margin-bottom: .625em;
+			  }
+			  .tableClass td {
+				border-bottom: 1px solid #ddd;
+				display: block;
+				font-size: .8em;
+				text-align: right;
+			  }
+			  .tableClass td:before {
+				content: attr(data-label);
+				float: left;
+				font-weight: bold;
+				text-transform: uppercase;
+			  }
+			  .tableClass td:last-child {
+				border-bottom: 0;
+			  }
+			}
+			.overlay {
+			  position: fixed;
+			  top: 0;
+			  bottom: 0;
+			  left: 0;
+			  right: 0;
+			  background: rgba(0, 0, 0, 0.7);
+			  transition: opacity 500ms;
+			  visibility: hidden;
+			  opacity: 0;
+			  z-index: 999;
+			}
+			.overlay:target {
+			  visibility: visible;
+			  opacity: 1;
+			}
+
+			.popup {
+			  margin: 70px auto;
+			  padding: 20px;
+			  background: #fff;
+			  border-radius: 5px;
+			  width: 30%;
+			  position: relative;
+			  transition: all 5s ease-in-out;
+			}
+			.popup h2 {
+			  margin-top: 0;
+			  color: #333;
+			  font-family: Tahoma, Arial, sans-serif;
+			}
+			.popup .close {
+			  position: absolute;
+			  top: 20px;
+			  right: 30px;
+			  transition: all 200ms;
+			  font-size: 30px;
+			  font-weight: bold;
+			  text-decoration: none;
+			  color: #333;
+			}
+			.popup .close:hover {
+			  color: #06D85F;
+			}
+			.popup .content {
+			  max-height: 50%;
+			  overflow: auto;
+			}
+			@media screen and (max-width: 700px){
+			  .popup{
+				width: 70%;
+			  }
+			}
+		</style>
+		 
+		 <div id="popup1" class="overlay">
+			<div class="popup">
+				<h2>Duplicate SKU Products</h2>
+				<a class="close" href="#">&times;</a>
+				<div class="content">
+					<table class="tableClass">
+						<tr>
+							<th scope="col">S.No</th>
+							<th scope="col">Product Name</th>
+							<th scope="col">SKU</th>
+						</tr>
+					<?php $val = 1;
+						foreach($products['Products'] as $prodKey=> $results){
+							
+							foreach($arr_duplicates as $key => $values){ 
+								
+								if(isset($results['Code']) && $results['Code']!='' && $results['Code'] == $values){ 
+							?>						
+							<tr>
+								<td><?php echo $val; ?></td>
+								<td><?php echo $results['Name']; ?></td>
+								<td><?php echo $results['Code']; ?></td>
+							</tr>
+							<?php $val++;
+						 } } } ?>
+					</table>
+				</div>
+			</div>
+		</div>
+		<?php 
+      }
       if( @$_GET['get_latest_changes'] && is_admin()) {
           $this->get_latest_changes();
       }
@@ -122,7 +282,10 @@ class nv_wc_api {
 		.__('Click here', 'ogoship-nettivarasto-api-for-woocommerce').'</a> '.__('to export all products to Nettivarasto', 'ogoship-nettivarasto-api-for-woocommerce')
 		.'.</p><h4>'.__('Update Orders and Products', 'ogoship-nettivarasto-api-for-woocommerce')
 		.'</h4><p><a href="?page=wc-settings&get_latest_changes=true">'.__('Click here', 'ogoship-nettivarasto-api-for-woocommerce')
-		.'</a> '.__('to update product and order info from Nettivarasto', 'ogoship-nettivarasto-api-for-woocommerce').'.</p>',
+		.'</a> '.__('to update product and order info from Nettivarasto', 'ogoship-nettivarasto-api-for-woocommerce').'.</p>
+		<h4>'.__('Check duplicate SKUs in WooCommerce', 'ogoship-nettivarasto-api-for-woocommerce').'</h4>
+		<p><a href="?page=wc-settings&sku_duplicate=true#popup1">'.__('Click here', 'ogoship-nettivarasto-api-for-woocommerce')
+		.'</a> '.__('to view the duplicate sku products', 'ogoship-nettivarasto-api-for-woocommerce').'.</p>',
         'id'    => 'nettivarasto_general_settings'
     );
 	$timestampstr = __('never', 'ogoship-nettivarasto-api-for-woocommerce');
@@ -173,6 +336,9 @@ class nv_wc_api {
   * @since 1.1.1
   */
   function add_custom_product_general_fields() {
+	global $product_object;
+	$getSkuValue = $product_object->get_sku( 'edit' );
+	
     woocommerce_wp_text_input( 
         array( 
             'id'          => '_nettivarasto_supplier_name', 
@@ -209,6 +375,16 @@ class nv_wc_api {
             'description' => __( 'Enter purchase for Nettivarasto.', 'ogoship-nettivarasto-api-for-woocommerce' ) 
         )
     );
+	
+	if(empty($getSkuValue)){ ?>
+		<script type="text/javascript">
+		jQuery(document).ready(function(){
+			jQuery('#_nettivarasto_no_export').prop('checked', true);
+		})
+		</script>
+	<?php } ?>
+	<?php
+	
     woocommerce_wp_checkbox( 
         array( 
             'id'          => '_nettivarasto_no_export', 
@@ -323,6 +499,43 @@ class nv_wc_api {
       }
   }
   
+  function get_all_duplicate_sku_products() {  
+	global $wpdb;
+	$args = array( 'post_type' => 'product', 'posts_per_page' => -1 );
+	$products = get_posts( $args );
+		
+	$NV_products = array('Products' => 
+		array( 
+			'Product' => array()
+		)
+	);
+
+	foreach ($products as $product) {
+		$WC_product = wc_get_product($product->ID);
+	  
+		$productSku = $WC_product->get_sku();
+	
+		if(!empty($productSku)){
+			$product_array = array(
+				'Code' => $WC_product->get_sku(),
+				'Name' => $WC_product->get_name(),
+				'Description' => strip_tags($WC_product->get_description()),
+				'InfoUrl' => get_permalink($WC_product->get_id()),
+				'SalesPrice' => wc_get_price_including_tax($WC_product),
+				'Weight'=> $WC_product->get_weight(),
+				'Height'=> $WC_product->get_height(),
+				'Width'=> $WC_product->get_width(),
+				'Depth'=> $WC_product->get_length(),
+				//'VatPercentage'=> $_tax->get_rate_percent($WC_product->get_tax_class()),
+				'Currency' => get_woocommerce_currency()
+			);
+			$NV_products['Products'][] = $product_array;
+		}
+		
+	}
+	return $NV_products;
+  }
+  
   function update_all_products() {
 	if($this->denyExport=="yes"){
 		$this->notice = __('Product export denied in the Nettivarasto settings.', 'ogoship-nettivarasto-api-for-woocommerce');
@@ -348,6 +561,7 @@ class nv_wc_api {
     }
      
     $products = get_posts( $args );
+	
     $NV_products = array('Products' => 
       array( 
           'Product' => array()
@@ -356,6 +570,7 @@ class nv_wc_api {
 	$_tax = new WC_Tax();
     foreach ($products as $product) {
       $WC_product = wc_get_product($product->ID);
+	  
       //We only allow export of simple and variable products. 
       if( !( get_post_meta($WC_product->get_id(), '_nettivarasto_no_export', true) ) == 'yes' && ( $WC_product->get_type() == 'simple' || $WC_product->get_type() == 'variable' ) )  {
         if ( $WC_product->has_child() ) {
@@ -366,6 +581,8 @@ class nv_wc_api {
             $PictureUrl = wp_get_attachment_image_src( $WC_child_product->get_image_id(), 'shop_thumbnail' );
             
             //Declare array here in order to add conditional 
+			$productSku = $WC_product->get_sku();
+			if(!empty($productSku)){
 			$product_array = array(
 				'Code' => $WC_child_product->get_sku(),
 				'Name' => $WC_child_product->get_name().' ('.$variations.')',
@@ -387,15 +604,20 @@ class nv_wc_api {
             if ( get_post_meta($WC_product->get_id(), '_nettivarasto_purchase_price', true) ) $product_array['Price'] = get_post_meta($WC_product->get_id(), '_nettivarasto_purchase_price', true);
             //Add product array to array
             $NV_products['Products']['Product'][] = $product_array;
+		    
             //Reset variables just in case
             $product_array = '';
             $PictureUrl = '';
             $variations = ''; 
+			}
           }
         }
   
         else {
           $PictureUrl = wp_get_attachment_image_src( $WC_product->get_image_id(), 'shop_thumbnail' );
+		  $productSku = $WC_product->get_sku();
+		  
+		  if(!empty($productSku)){
           $product_array = array(
             'Code' => $WC_product->get_sku(),
             'Name' => $WC_product->get_name(),
@@ -416,6 +638,7 @@ class nv_wc_api {
           if ( $PictureUrl ) $product_array['PictureUrl'] = $PictureUrl;
           $NV_products['Products']['Product'][] = $product_array;
         }
+        }
         //Reset variables just in case
         $product_array = '';
         $PictureUrl = '';
@@ -427,6 +650,11 @@ class nv_wc_api {
       //Let's switch back to original language
       $sitepress->switch_lang( $original_language );
     }
+
+	//print '<pre>';
+	//print_r($NV_products);
+	//exit;
+
     $response = $this->api->updateAllProducts($NV_products);
     if ( $response ) {
       if ( ! ( (string)$response['Response']['Info']['@Success'] == 'true' ) ) {
@@ -435,6 +663,13 @@ class nv_wc_api {
 		$this->notice = __('Product export completed.', 'ogoship-nettivarasto-api-for-woocommerce');
       }
     }
+  }
+  
+	function getMetaValue( $post_id ){
+		global $wpdb;
+		$meta_value = $wpdb->get_var( $wpdb->prepare( "SELECT meta_value FROM $wpdb->postmeta WHERE meta_key='_nettivarasto_no_export' AND post_id='%s' LIMIT 1", $post_id ) );
+		if ( $meta_value ) return $meta_value;
+		return null;
   }
   
   function set_notice($notice) {
