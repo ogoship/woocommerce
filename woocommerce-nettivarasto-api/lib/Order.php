@@ -172,7 +172,17 @@ class NettivarastoAPI_Order extends NettivarastoAPI_Object
   {
     $this->setAttribute('Comments', $value);
   }
-  
+
+  function getPickUpPointCode($value)
+  {
+      $this->getAttribute('PickUpPointCode', $value);
+  }
+
+  function setPickUpPointCode($value)
+  {
+      $this->setAttribute('PickUpPointCode', $value);
+  }
+
   /**
    * Set to true for testing purposes.
    * 

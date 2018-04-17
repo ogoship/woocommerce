@@ -5,11 +5,13 @@
  * Description: Integrate WooCommerce with Nettivarasto (http://nettivarasto.fi).
  * Author: OGOShip / Nettivarasto
  * Author URI: https://www.ogoship.com
- * Version: 3.2.6
+ * Version: 3.2.9
  * Text Domain: ogoship-nettivarasto-api-for-woocommerce
  * Domain Path: /i18n/languages/
+ * WC requires at least: 3.0.0
+ * WC tested up to: 3.3.5
  *
- * Copyright: (c) 2017 Koivua Oy.
+ * Copyright: (c) 2018 Koivua Oy.
  *
  * License: GNU General Public License v3.0
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -17,7 +19,7 @@
  * @package   WC-Nettivarasto
  * @author    OGOShip / Nettivarasto.
  * @category  
- * @copyright Copyright (c) 2017, Koivua Oy
+ * @copyright Copyright (c) 2018, Koivua Oy
  * @license   http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
@@ -38,7 +40,7 @@ class nv_wc_api {
 
     function __construct() {
 
-        register_activation_hook( __FILE__, array( &$this, 'activate_nettivarasto' ) );
+        register_activation_hook( __FILE__, array( &$this, 'check_latest_changes_hook' ) );
         register_deactivation_hook( __FILE__, array( &$this, 'deactivate_nettivarasto' ) );
 
         $this->merchantID = get_option('woocommerce_nettivarasto_merchant_id');
@@ -256,11 +258,32 @@ class nv_wc_api {
 							?>						
 							<tr>
 								<td><?php echo $val; ?></td>
-								<td><?php echo $results['Name']; ?></td>
+								<td><a href="post.php?post=<?php echo $results['ID']; ?>&action=edit" target="_blank"><?php echo $results['Name']; ?></a></td>
 								<td><?php echo $results['Code']; ?></td>
 							</tr>
 							<?php $val++;
 						 } } } ?>
+					</table>
+				</div><br /><br />
+				<h2>Empty SKU Products</h2>
+				<div class="content">
+					<table class="tableClass">
+						<tr>
+							<th scope="col">S.No</th>
+							<th scope="col">Product Name</th>
+							<th scope="col">SKU</th>
+						</tr>
+					<?php $val = 1;
+						foreach($products['EmptyProducts'] as $prodKey=> $results){
+							
+							?>						
+							<tr>
+								<td><?php echo $val; ?></td>
+								<td><a href="post.php?post=<?php echo $results['ID']; ?>&action=edit" target="_blank"><?php echo $results['Name']; ?></a></td>
+								<td><?php echo $results['Code']; ?></td>
+							</tr>
+							<?php $val++;
+							} ?>
 					</table>
 				</div>
 			</div>
@@ -300,9 +323,9 @@ class nv_wc_api {
 		.'.</p><h4>'.__('Update Orders and Products', 'ogoship-nettivarasto-api-for-woocommerce')
 		.'</h4><p><a href="?page=wc-settings&get_latest_changes=true">'.__('Click here', 'ogoship-nettivarasto-api-for-woocommerce')
 		.'</a> '.__('to update product and order info from Nettivarasto', 'ogoship-nettivarasto-api-for-woocommerce').'.</p>
-		<h4>'.__('Check duplicate SKUs in WooCommerce', 'ogoship-nettivarasto-api-for-woocommerce').'</h4>
+		<h4>'.__('Check duplicate and empty SKUs', 'ogoship-nettivarasto-api-for-woocommerce').'</h4>
 		<p><a href="?page=wc-settings&sku_duplicate=true#popup1">'.__('Click here', 'ogoship-nettivarasto-api-for-woocommerce')
-		.'</a> '.__('to view the duplicate sku products', 'ogoship-nettivarasto-api-for-woocommerce').'.</p>',
+		.'</a> '.__('to view the duplicate and empty sku products', 'ogoship-nettivarasto-api-for-woocommerce').'.</p>',
         'id'    => 'nettivarasto_general_settings'
     );
 	$timestampstr = __('never', 'ogoship-nettivarasto-api-for-woocommerce');
@@ -345,10 +368,10 @@ class nv_wc_api {
     );
 	$updated_settings[] = array(
       'name'      => __( 'Hourly order status and product stock updates on/off', 'ogoship-nettivarasto-api-for-woocommerce' ),
-      'desc_tip'  => __( 'Uncheck to disable automatic hourly retrieval of latest order status and product stock level changes on/off.', 'ogoship-nettivarasto-api-for-woocommerce' ),
+      'desc_tip'  => __( 'Check to enable automatic hourly retrieval of latest order status and product stock level changes.', 'ogoship-nettivarasto-api-for-woocommerce' ),
       'id'        => 'woocommerce_nettivarasto_hourly_updates',
       'type'      => 'checkbox',
-      'default'   => 'yes',
+      'default'   => 'no',
       'css'       => 'min-width:300px;'
     );
     $updated_settings[] = array( 'type' => 'sectionend', 'id' => 'nettivarasto_general_settings' ); 
@@ -495,6 +518,7 @@ class nv_wc_api {
       $order->setCustomerPhone( get_post_meta($order_id, '_billing_phone', true) );
       $order->setCustomerZip($WC_order->get_shipping_postcode());
       $order->setComments($WC_order->get_customer_note());	  
+      //$order->setPickUpPoint();
   
       $order->setShipping($nettivarasto_shipping_method);
       if ( $order->save() ) {
@@ -541,6 +565,7 @@ class nv_wc_api {
 	
 		if(!empty($productSku)){
 			$product_array = array(
+				'ID' => $WC_product->get_ID(),
 				'Code' => $WC_product->get_sku(),
 				'Name' => $WC_product->get_name(),
 				'Description' => strip_tags($WC_product->get_description()),
@@ -550,10 +575,28 @@ class nv_wc_api {
 				'Height'=> $WC_product->get_height(),
 				'Width'=> $WC_product->get_width(),
 				'Depth'=> $WC_product->get_length(),
+				'Permalink'=> $WC_product->get_permalink(),
 				//'VatPercentage'=> $_tax->get_rate_percent($WC_product->get_tax_class()),
 				'Currency' => get_woocommerce_currency()
 			);
 			$NV_products['Products'][] = $product_array;
+		}else{
+			$product_array = array(
+				'ID' => $WC_product->get_ID(),
+				'Code' => $WC_product->get_sku(),
+				'Name' => $WC_product->get_name(),
+				'Description' => strip_tags($WC_product->get_description()),
+				'InfoUrl' => get_permalink($WC_product->get_id()),
+				'SalesPrice' => wc_get_price_including_tax($WC_product),
+				'Weight'=> $WC_product->get_weight(),
+				'Height'=> $WC_product->get_height(),
+				'Width'=> $WC_product->get_width(),
+				'Depth'=> $WC_product->get_length(),
+				'Permalink'=> $WC_product->get_permalink(),
+				//'VatPercentage'=> $_tax->get_rate_percent($WC_product->get_tax_class()),
+				'Currency' => get_woocommerce_currency()
+			);
+			$NV_products['EmptyProducts'][] = $product_array;
 		}
 		
 	}
@@ -805,8 +848,10 @@ class nv_wc_api {
           $WC_product = $this->get_product_by_sku( $latestProduct->getCode() );
               if($WC_product) {
                   wc_update_product_stock($WC_product, $latestProduct->getStock(), 'set' );
-                  if ( $woocommerce_wpml ) {
-                    $woocommerce_wpml->products->sync_post_action( $WC_product->get_id(), $WC_product );
+                  if ( $woocommerce_wpml && $woocommerce_wpml->products) {
+                      if(method_exists($woocommerce_wpml->products, "sync_post_action")){
+                          $woocommerce_wpml->products->sync_post_action( $WC_product->get_id(), $WC_product );
+                      }
                   }
                   if ( $latestProduct->getStock() ) {
                   $WC_product->set_stock_status( 'instock' );
