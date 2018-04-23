@@ -150,6 +150,14 @@ class NettivarastoAPI_Order extends NettivarastoAPI_Object
   }
   
   /**
+   * Set price currency.
+   */
+  function setPriceCurrency($value)
+  {
+    $this->setAttribute('PriceCurrency', $value);
+  }
+  
+  /**
    * Warehouse will assign tracking number when available.
    */
   function getTrackingNumber()

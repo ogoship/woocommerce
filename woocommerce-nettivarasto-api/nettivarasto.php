@@ -509,6 +509,7 @@ class nv_wc_api {
       }
 
       $order->setPriceTotal($WC_order->get_total());
+	  $order->setPriceCurrency($WC_order->get_currency());
       $order->setCustomerName($WC_order->get_shipping_first_name().' '.$WC_order->get_shipping_last_name());
       $order->setCustomerAddress1($WC_order->get_shipping_address_1());
       $order->setCustomerAddress2($WC_order->get_shipping_address_2());
