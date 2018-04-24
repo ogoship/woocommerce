@@ -5,7 +5,7 @@
  * Description: Integrate WooCommerce with Nettivarasto (http://nettivarasto.fi).
  * Author: OGOShip / Nettivarasto
  * Author URI: https://www.ogoship.com
- * Version: 3.2.9
+ * Version: 3.3.1
  * Text Domain: ogoship-nettivarasto-api-for-woocommerce
  * Domain Path: /i18n/languages/
  * WC requires at least: 3.0.0
@@ -519,7 +519,10 @@ class nv_wc_api {
       $order->setCustomerPhone( get_post_meta($order_id, '_billing_phone', true) );
       $order->setCustomerZip($WC_order->get_shipping_postcode());
       $order->setComments($WC_order->get_customer_note());	  
-      //$order->setPickUpPoint();
+      $pupcode = get_post_meta($order_id, '_woo_carrier_agent_id', true);
+      if(trim($pupcode) != "") {
+        $order->setPickUpPointCode(trim($pupcode));
+	  }
   
       $order->setShipping($nettivarasto_shipping_method);
       if ( $order->save() ) {
