@@ -475,7 +475,12 @@ class nv_wc_api {
     $WC_order = new WC_Order($order_id);
     $shipping_methods = $WC_order->get_shipping_methods(); 
     foreach ( $shipping_methods as $shipping_method ) {
-	$method_id = $shipping_method->get_method_id();
+        $method_id = $shipping_method->get_method_id();
+        // WC 3.4 ->
+        if(strpos($method_id, ':') === FALSE)
+        {
+            $method_id = $shipping_method->get_method_id() . "_" . $shipping_method->get_instance_id();
+        }
     }
 	
 
