@@ -2,14 +2,14 @@
 /**
  * Plugin Name: OGOShip / Nettivarasto API for WooCommerce
  * Plugin URI: https://github.com/ogoship/woocommerce
- * Description: Integrate WooCommerce with Nettivarasto (http://nettivarasto.fi).
+ * Description: Integrate WooCommerce with OGOship (https://ogoship.com).
  * Author: OGOShip / Nettivarasto
  * Author URI: https://www.ogoship.com
- * Version: 3.3.1
+ * Version: 3.3.3
  * Text Domain: ogoship-nettivarasto-api-for-woocommerce
  * Domain Path: /i18n/languages/
  * WC requires at least: 3.0.0
- * WC tested up to: 3.3.5
+ * WC tested up to: 3.4.1
  *
  * Copyright: (c) 2018 Koivua Oy.
  *
@@ -29,8 +29,6 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 require_once 'lib/API.php'; 
 
 class nv_wc_api {
-    const name = 'nv_wc_api';
-    const slug = 'nv_wc_api';
 
     private $merchantID = '';
     private $secretToken = '';
@@ -58,7 +56,7 @@ class nv_wc_api {
         add_action('admin_notices', array( &$this, 'show_notice' ), '10');
         add_action( 'woocommerce_order_actions', array( $this, 'add_order_meta_box_actions' ) );
         add_action( 'woocommerce_order_action_nv_send_order_to_nettivarasto', array( $this, 'process_action_nv_send_order_to_nettivarasto' ), 99, 1 );
-        remove_action( 'admin_notices', 'woothemes_updater_notice' );
+        //remove_action( 'admin_notices', 'woothemes_updater_notice' );
 
         add_action( 'woocommerce_view_order', array( $this, 'view_order_tracking_code' ), 1 );
         add_action( 'woocommerce_email_order_meta', array( $this, 'email_tracking_code' ), 10, 3 );
