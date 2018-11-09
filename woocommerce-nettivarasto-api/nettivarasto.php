@@ -9,7 +9,7 @@
  * Text Domain: ogoship-nettivarasto-api-for-woocommerce
  * Domain Path: /i18n/languages/
  * WC requires at least: 3.0.0
- * WC tested up to: 3.4.1
+ * WC tested up to: 3.5.1
  *
  * Copyright: (c) 2018 Koivua Oy.
  *
@@ -35,6 +35,7 @@ class nv_wc_api {
     private $api = '';
     private $notice;
     private $error;
+    private $version;
 
     function __construct() {
 
@@ -45,7 +46,18 @@ class nv_wc_api {
         $this->secretToken = get_option('woocommerce_nettivarasto_secret_token');
 		$this->denyExport = get_option('woocommerce_deny_export_product');
 		$this->checkDuplicateSKU = get_option('woocommerce_check_duplicate_sku');
-        $this->api = new NettivarastoAPI($this->merchantID, $this->secretToken);
+
+        if ( is_admin() ) {
+            if( !function_exists('get_plugin_data') ){
+                require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+                $pluginfo = get_plugin_data(__FILE__, false, false);
+            }
+            $this->version = "Woocommerce " . $pluginfo["Version"];
+        } else {
+            $this->version = "Woocommerce 3.3.X";
+        }
+
+        $this->api = new NettivarastoAPI($this->merchantID, $this->secretToken, $this->version);
         $this->api->setTimestamp( get_option('nettivarasto_latest_changes_timestamp') );
 
         add_action( 'init', array( &$this, 'init_nettivarasto' ) );

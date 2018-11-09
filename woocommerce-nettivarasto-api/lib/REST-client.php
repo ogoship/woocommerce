@@ -9,6 +9,8 @@ class NettivarastoAPI_RESTclient
   private $getParameters = array();
   private $dataArray = array();
   private $json = true;
+  private $restClientVersion = "OGOshipPHP/1.3";
+  private $pluginVersion = '?';
   
   function __construct(NettivarastoAPI $api, $method, $url, $shaParameters)
   {
@@ -16,6 +18,10 @@ class NettivarastoAPI_RESTclient
     $this->method = $method;
     $this->url = $url;
     $this->shaParameters = $shaParameters;
+  }
+  function setVersion($version)
+  {
+      $this->pluginVersion = $version;
   }
   
   function addGetParameter($key, $value)
@@ -46,15 +52,6 @@ class NettivarastoAPI_RESTclient
     // Clear old error messages.
     $this->api->setError('');
     
-    // Open HTTP-connection.
-    $ip = 'service.nettivarasto.fi';
-    $fp = @fsockopen($ip, 80, $errno, $errstr, 5);
-    $result = '';
-    if (!$fp)
-    {
-      return false;
-    }
-
     // Remove '/' from the end of url.
     if ($this->url[strlen($this->url) - 1] == '/')
     {
@@ -70,97 +67,28 @@ class NettivarastoAPI_RESTclient
       $this->url .= '&' . urlencode($key) . '=' . urlencode($value);
     }
 
-    // Create HTTP-request.
-    $out = $this->method . ' ' . $this->url . " HTTP/1.1\r\n";
-    $out .= 'Host: ' . $ip . "\r\n";
-    if ($this->json)
-    {
-      $out .= "Content-type: application/json\r\n";
-    }
-    else
-    {
-      $out .= "Content-type: application/xml\r\n";
-    }
-    $out .= "Connection: close\r\n";
-
-    // Append data to HTTP-request.
-    $data = false;
-    if (count($this->dataArray) > 0)
-    {
-      if ($this->json)
-      {
-        // JSON.
-        $data = json_encode($this->dataArray);
-      }
-      else
-      {
-        // XML.
-
-        /// \todo XML
-        $data = '<todo></todo>';
-      }
-
-      $out .= 'Content-Length: ' . strlen($data) . "\r\n";
-    }
-    $out .= "\r\n";
-    if ($data !== false)
-    {
-      $out .= $data;
-    }
-
-    /// \todo REMOVE
-    ///echo '<div style="display: none">$out = ';
-    ///print_r($out);
-    ///echo "</div>\n";
-    
-    // Send HTTP-request.
-    if (@fwrite($fp, $out) === false)
-    {
-      @fclose($fp);
-      return false;
-    }
-    while (!@feof($fp))
-    {
-      $result .= fgets($fp, 128);
-    }
-    @fclose($fp);
-
-    /// \todo REMOVE
-//    print_r($result);
-    //return;
-
-    // Extract data from HTTP-response.
-    $header = true;
-    $data = '';
-    foreach(preg_split("/(\r?\n)/", $result) as $line)
-    {
-      if ($line == '')
-      {
-        $header = false;
-      }
-      else if (!$header)
-      {
-        $data .= $line . "\n";
-      }
-    }
-    if ($data == '')
-    {
-      return false;
-    }
+    // Create HTTPS-request.
+    $context = stream_context_create(array(
+        'http' => array(
+            'header' => "Content-type: application/json\r\nConnection: close\r\n"
+            . "User-Agent: " . $this->restClientVersion . " (" . $this->pluginVersion . ")\r\n" ,
+            'method' => $this->method,
+            'content' => json_encode($this->dataArray)
+        )
+    ));
+    // do the request
+    $result = file_get_contents("http://my.ogoship.com" . $this->url, false, $context);
 
     // Response data type.
     if ($this->json)
     {
       // JSON response.
-      $jsonData = @json_decode($data, true);
+      $jsonData = @json_decode($result, true);
       $resultArray = $jsonData;
       if ($jsonData === null)
       {
         return false;
       }
-
-      /// \todo REMOVE
-      //print_r($data);
 
       if (is_array($jsonData) &&
           array_key_exists('Response', $jsonData) &&

@@ -10,11 +10,13 @@ class NettivarastoAPI
   private $secretToken = '';
   private $timestamp = 0;
   private $error = '';
+  public $pluginVersion = '';
   
-  function __construct($merchantID, $secretToken)
+  function __construct($merchantID, $secretToken, $pluginVersion = '')
   {
     $this->merchantID = $merchantID;
     $this->secretToken = $secretToken;
+    $this->pluginVersion = $pluginVersion;
   }
 
   function setTimestamp($timestamp)
@@ -68,6 +70,10 @@ class NettivarastoAPI
     } else {
       $restClient = new NettivarastoAPI_RESTclient($this, 'GET', '/LatestChanges', array('order','latestchanges', $this->timestamp));
       $restClient->addGetParameter('TimeStamp', $this->timestamp);
+    }
+    if($this->pluginVersion !== '')
+    {
+        $restClient->setVersion($this->pluginVersion);
     }
     $resultArray = array();
     $success = $restClient->execute($resultArray);
