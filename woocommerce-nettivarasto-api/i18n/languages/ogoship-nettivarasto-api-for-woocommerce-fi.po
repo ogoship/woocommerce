@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce Nettivarasto API\n"
-"POT-Creation-Date: 2018-04-17 15:50+0300\n"
-"PO-Revision-Date: 2018-04-17 15:50+0300\n"
+"POT-Creation-Date: 2018-11-09 15:44+0200\n"
+"PO-Revision-Date: 2018-11-09 15:47+0200\n"
 "Last-Translator: Ilkka Loppi <loppi@iki.fi>\n"
 "Language-Team: \n"
 "Language: fi\n"
@@ -18,95 +18,97 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: nettivarasto.php:301
-msgid "Transfer to Nettivarasto"
-msgstr "Siirrä Nettivarastoon"
+#: nettivarasto.php:311
+msgid "Transfer to OGOship"
+msgstr "Siirrä OGOshipiin"
 
-#: nettivarasto.php:303
-msgid "Transfer orders made by this shipping method automatically to Nettivarasto."
-msgstr "Siirrä tällä toimitustavalla tehdyt tilaukset automaattisesti Nettivarastoon."
+#: nettivarasto.php:313
+msgid "Transfer orders made by this shipping method automatically to OGOship."
+msgstr ""
+"Siirrä tällä toimitustavalla tehdyt tilaukset automaattisesti OGOshipiin."
 
-#: nettivarasto.php:307
-msgid "Nettivarasto Delivery Type"
-msgstr "Nettivaraston Toimitustapa"
+#: nettivarasto.php:317
+msgid "OGOship Delivery Type"
+msgstr "OGOshipin Toimitustapa"
 
-#: nettivarasto.php:309
-msgid "Set external code of the Nettivarasto delivery type for this shipping method."
-msgstr "Aseta Nettivaraston koodi tälle toimitustavalle."
+#: nettivarasto.php:319
+msgid ""
+"Set external code of the OGOship delivery type for this shipping method."
+msgstr "Aseta OGOshipin toimitustavan koodi tälle toimitustavalle."
 
-#: nettivarasto.php:318
-msgid "Nettivarasto General Settings"
-msgstr "Nettivaraston yleiset asetukset"
+#: nettivarasto.php:328
+msgid "OGOship General Settings"
+msgstr "OGOship yleiset asetukset"
 
-#: nettivarasto.php:320
-msgid "The following are Nettivarasto general settings."
-msgstr "Alla olevat ovat Nettivaraston yleisiä asetuksia."
+#: nettivarasto.php:330
+msgid "The following are OGOship general settings."
+msgstr "Alla olevat ovat OGOshipin yleisiä asetuksia."
 
-#: nettivarasto.php:321
+#: nettivarasto.php:331
 msgid "Export"
 msgstr "Vie"
 
-#: nettivarasto.php:322 nettivarasto.php:324 nettivarasto.php:327
+#: nettivarasto.php:332 nettivarasto.php:334 nettivarasto.php:337
 msgid "Click here"
 msgstr "Klikkaa tästä"
 
-#: nettivarasto.php:322
+#: nettivarasto.php:332
 msgid "to export all products to Nettivarasto"
 msgstr "viedäksesi kaikki tuotteet Nettivarastoon"
 
-#: nettivarasto.php:323
+#: nettivarasto.php:333
 msgid "Update Orders and Products"
 msgstr "Tilausten ja Tuotetietojen Päivitys"
 
-#: nettivarasto.php:325
-msgid "to update product and order info from Nettivarasto"
-msgstr "päivittääksesi tuotteiden varastosaldot ja tilausten tilat Nettivarastosta"
+#: nettivarasto.php:335
+msgid "to update product and order info from OGOship"
+msgstr "päivittääksesi tuotteiden varastosaldot ja tilausten tilat OGOshipista"
 
-#: nettivarasto.php:326
+#: nettivarasto.php:336
 msgid "Check duplicate and empty SKUs"
 msgstr "Tarkista päällekkäiset ja tyhjät SKUt"
 
-#: nettivarasto.php:328
+#: nettivarasto.php:338
 msgid "to view the duplicate and empty sku products"
 msgstr "katsoaksesi päällekkäiset ja tyhjät sku -tuotteet"
 
-#: nettivarasto.php:331
+#: nettivarasto.php:341
 msgid "never"
 msgstr "ei koskaan"
 
-#: nettivarasto.php:344
-msgid "Latest successful update from Nettivarasto"
-msgstr "Viimeisin onnistunut päivitys Nettivarastosta"
+#: nettivarasto.php:354
+msgid "Latest successful update from OGOship"
+msgstr "Viimeisin onnistunut päivitys OGOshipista"
 
-#: nettivarasto.php:349
+#: nettivarasto.php:359
 msgid "Merchant ID"
 msgstr "Kauppias ID"
 
-#: nettivarasto.php:350
-msgid "Insert Merchant ID from Nettivarasto"
-msgstr "Syötä Nettivarastolta saamasi kauppias ID"
+#: nettivarasto.php:360
+msgid "Insert Merchant ID from OGOship"
+msgstr "Syötä myOGOsta saamasi kauppias ID"
 
-#: nettivarasto.php:356
+#: nettivarasto.php:366
 msgid "Secret Token"
 msgstr "Salainen avain"
 
-#: nettivarasto.php:357
-msgid "Insert Nettivarasto Secret token"
-msgstr "Syötä Nettivarastolta saamasi salainen avain"
+#: nettivarasto.php:367
+msgid "Insert OGOship Secret token"
+msgstr "Syötä  myOGOsta saamasi salainen avain"
 
-#: nettivarasto.php:363
+#: nettivarasto.php:373
 msgid "Deny product export"
 msgstr "Estä tuotteiden vienti"
 
-#: nettivarasto.php:364
-msgid "This option will deny the product export to Nettivarasto"
-msgstr "Tämä valinta estää tuotetietojen viennin Nettivarastoon"
+#: nettivarasto.php:374
+msgid "This option will deny the product export to OGOship"
+msgstr "Tämä valinta estää tuotetietojen viennin OGOshipiin"
 
-#: nettivarasto.php:370
+#: nettivarasto.php:380
 msgid "Hourly order status and product stock updates on/off"
 msgstr "Ajastettu tilausten tilojen ja tuotteiden saldon päivitys päälle/pois"
 
-#: nettivarasto.php:371
+#: nettivarasto.php:381
 msgid ""
 "Check to enable automatic hourly retrieval of latest order status and "
 "product stock level changes."
@@ -114,118 +116,213 @@ msgstr ""
 "Rastita ottaaksesi käyttöön ajastetun tilausten tilojen ja tuotesaldojen "
 "hakeminen."
 
-#: nettivarasto.php:393
+#: nettivarasto.php:403
 msgid "Supplier:"
 msgstr "Toimittaja:"
 
-#: nettivarasto.php:396
-msgid "Enter name of supplier for Nettivarasto."
-msgstr "Syötä tavarantoimittajan nimi."
+#: nettivarasto.php:406
+msgid "Enter name of supplier for OGOship."
+msgstr "Syötä tavarantoimittajan nimi OGOshipissa."
 
-#: nettivarasto.php:402
+#: nettivarasto.php:412
 msgid "Supplier code:"
 msgstr "Tavarantoimittajan koodi:"
 
-#: nettivarasto.php:405
-msgid "Enter code of supplier for Nettivarasto."
-msgstr "Tavarantoimittajan koodi, joka lähetetään Nettivarastoon."
+#: nettivarasto.php:415
+msgid "Enter code of supplier for OGOship."
+msgstr "Tavarantoimittajan koodi OGOshipissa."
 
-#: nettivarasto.php:411
+#: nettivarasto.php:421
 msgid "Group:"
 msgstr "Tuoteryhmä:"
 
-#: nettivarasto.php:414
-msgid "Enter group of product for Nettivarasto."
-msgstr "Syötä Nettivarastoon lähetettävä tuoteryhmä."
+#: nettivarasto.php:424
+msgid "Enter group of product for OGOship."
+msgstr "Syötä OGOship tuoteryhmä."
 
-#: nettivarasto.php:420
+#: nettivarasto.php:430
 msgid "Purchase price:"
 msgstr "Sisäänostohinta:"
 
-#: nettivarasto.php:423
-msgid "Enter purchase for Nettivarasto."
-msgstr "Syötä sisäänostohinta, joka lähetetetään Nettivarastolle."
+#: nettivarasto.php:433
+msgid "Enter purchase price for OGOship."
+msgstr "Syötä sisäänostohinta, joka lähetetään OGOshipiin."
 
-#: nettivarasto.php:439
-msgid "Check if you do <strong>not</strong> want to export this product automatically to Nettivarasto."
-msgstr "Valitse, mikäli tämän tuotteen tietoja <strong>ei</strong> viedä Nettivarastoon."
+#: nettivarasto.php:449
+msgid ""
+"Check if you do <strong>not</strong> want to export this product "
+"automatically to OGOship."
+msgstr ""
+"Valitse, mikäli tämän tuotteen tietoja <strong>ei</strong> viedä OGOshipiin."
 
-#: nettivarasto.php:440
-msgid "Do not export to Nettivarasto"
-msgstr "Älä vie Nettivarastoon"
+#: nettivarasto.php:450
+msgid "Do not export to OGOship"
+msgstr "Älä vie OGOshipiin"
 
-#: nettivarasto.php:507
+#: nettivarasto.php:522
 msgid "No products in order to export"
 msgstr "Tilauksessa ei tuotteita vietäväksi"
 
-#: nettivarasto.php:524 nettivarasto.php:525
-msgid "Order transferred to Nettivarasto"
-msgstr "Tilaus siirretty Nettivarastoon"
+#: nettivarasto.php:544 nettivarasto.php:545
+msgid "Order transferred to OGOship"
+msgstr "Tilaus siirretty OGOshipiin"
 
-#: nettivarasto.php:529
+#: nettivarasto.php:549
 msgid "Error"
 msgstr "Virhe"
 
-#: nettivarasto.php:530
+#: nettivarasto.php:550
 msgid "Send order again."
 msgstr "Lähetä tilaus uudestaan."
 
-#: nettivarasto.php:607
-msgid "Product export denied in the Nettivarasto settings."
-msgstr "Tuotteiden vienti kielletty Nettivaraston asetuksissa."
+#: nettivarasto.php:627
+msgid "Product export denied in the OGOship settings."
+msgstr "Tuotteiden vienti kielletty OGOship asetuksissa."
 
-#: nettivarasto.php:729
+#: nettivarasto.php:749
 msgid "Product export completed."
 msgstr "Tuotteiden vienti valmis."
 
-#: nettivarasto.php:777
-msgid "Send Order to Nettivarasto"
-msgstr "Lähetä tilaus Nettivarastoon"
+#: nettivarasto.php:797
+msgid "Send Order to OGOship"
+msgstr "Lähetä tilaus OGOshipiin"
 
-#: nettivarasto.php:812
+#: nettivarasto.php:832
 msgid "Error loading order"
 msgstr "Virhe ladattaessa tilausta"
 
-#: nettivarasto.php:813
+#: nettivarasto.php:833
 msgid "from WooCommerce, skipping"
 msgstr "WooCommercesta, ohitetaan"
 
-#: nettivarasto.php:821
-msgid "Nettivarasto change of status to SHIPPED."
-msgstr "Nettivaraston tila: SHIPPED."
+#: nettivarasto.php:841
+msgid "OGOship change of status to SHIPPED."
+msgstr "OGOship tila: SHIPPED."
 
-#: nettivarasto.php:822 nettivarasto.php:882 nettivarasto.php:890
-#: nettivarasto.php:906
+#: nettivarasto.php:842 nettivarasto.php:902 nettivarasto.php:910
+#: nettivarasto.php:926
 msgid "Tracking code"
 msgstr "Seurantakoodi"
 
-#: nettivarasto.php:826
-msgid "Nettivarasto change of status to CANCELLED."
-msgstr "Nettivaraston tila: CANCELLED."
+#: nettivarasto.php:846
+msgid "OGOship change of status to CANCELLED."
+msgstr "OGOship tila: CANCELLED."
 
-#: nettivarasto.php:829
-msgid "Nettivarasto change of status to COLLECTING."
-msgstr "Nettivaraston tila: COLLECTING."
+#: nettivarasto.php:849
+msgid "OGOship change of status to COLLECTING."
+msgstr "OGOship tila: COLLECTING."
 
-#: nettivarasto.php:832
-msgid "Nettivarasto change of status to PENDING."
-msgstr "Nettivaraston tila: PENDING."
+#: nettivarasto.php:852
+msgid "OGOship change of status to PENDING."
+msgstr "OGOship tila: PENDING."
 
-#: nettivarasto.php:835
-msgid "Nettivarasto change of status to RESERVED."
-msgstr "Nettivaraston tila: RESERVED."
+#: nettivarasto.php:855
+msgid "OGOship change of status to RESERVED."
+msgstr "OGOship tila: RESERVED."
 
-#: nettivarasto.php:838
-msgid "Nettivarasto change of status to DRAFT."
-msgstr "Nettivaraston tila: DRAFT."
+#: nettivarasto.php:858
+msgid "OGOship change of status to DRAFT."
+msgstr "OGOship tila: DRAFT."
 
-#: nettivarasto.php:862
-msgid "Product and order data updated from Nettivarasto."
-msgstr "Tuotteiden ja tilausten tiedot päivitetty Nettivarastosta."
+#: nettivarasto.php:882
+msgid "Product and order data updated from OGOship."
+msgstr "Tuotteiden ja tilausten tiedot päivitetty OGOshipista."
 
-#: nettivarasto.php:889 nettivarasto.php:905
+#: nettivarasto.php:909 nettivarasto.php:925
 msgid "Track Your Shipment"
 msgstr "Seuraa lähetystäsi"
+
+#~ msgid "Nettivarasto change of status to DRAFT."
+#~ msgstr "Nettivaraston tila: DRAFT."
+
+#~ msgid "Transfer to Nettivarasto"
+#~ msgstr "Siirrä Nettivarastoon"
+
+#~ msgid ""
+#~ "Transfer orders made by this shipping method automatically to "
+#~ "Nettivarasto."
+#~ msgstr ""
+#~ "Siirrä tällä toimitustavalla tehdyt tilaukset automaattisesti "
+#~ "Nettivarastoon."
+
+#~ msgid "Nettivarasto Delivery Type"
+#~ msgstr "Nettivaraston Toimitustapa"
+
+#~ msgid ""
+#~ "Set external code of the Nettivarasto delivery type for this shipping "
+#~ "method."
+#~ msgstr "Aseta Nettivaraston koodi tälle toimitustavalle."
+
+#~ msgid "Nettivarasto General Settings"
+#~ msgstr "Nettivaraston yleiset asetukset"
+
+#~ msgid "The following are Nettivarasto general settings."
+#~ msgstr "Alla olevat ovat Nettivaraston yleisiä asetuksia."
+
+#~ msgid "to update product and order info from Nettivarasto"
+#~ msgstr ""
+#~ "päivittääksesi tuotteiden varastosaldot ja tilausten tilat Nettivarastosta"
+
+#~ msgid "Latest successful update from Nettivarasto"
+#~ msgstr "Viimeisin onnistunut päivitys Nettivarastosta"
+
+#~ msgid "Insert Merchant ID from Nettivarasto"
+#~ msgstr "Syötä Nettivarastolta saamasi kauppias ID"
+
+#~ msgid "Insert Nettivarasto Secret token"
+#~ msgstr "Syötä Nettivarastolta saamasi salainen avain"
+
+#~ msgid "This option will deny the product export to Nettivarasto"
+#~ msgstr "Tämä valinta estää tuotetietojen viennin Nettivarastoon"
+
+#~ msgid "Enter name of supplier for Nettivarasto."
+#~ msgstr "Syötä tavarantoimittajan nimi."
+
+#~ msgid "Enter code of supplier for Nettivarasto."
+#~ msgstr "Tavarantoimittajan koodi, joka lähetetään Nettivarastoon."
+
+#~ msgid "Enter group of product for Nettivarasto."
+#~ msgstr "Syötä Nettivarastoon lähetettävä tuoteryhmä."
+
+#~ msgid "Enter purchase for Nettivarasto."
+#~ msgstr "Syötä sisäänostohinta, joka lähetetetään Nettivarastolle."
+
+#~ msgid ""
+#~ "Check if you do <strong>not</strong> want to export this product "
+#~ "automatically to Nettivarasto."
+#~ msgstr ""
+#~ "Valitse, mikäli tämän tuotteen tietoja <strong>ei</strong> viedä "
+#~ "Nettivarastoon."
+
+#~ msgid "Do not export to Nettivarasto"
+#~ msgstr "Älä vie Nettivarastoon"
+
+#~ msgid "Order transferred to Nettivarasto"
+#~ msgstr "Tilaus siirretty Nettivarastoon"
+
+#~ msgid "Product export denied in the Nettivarasto settings."
+#~ msgstr "Tuotteiden vienti kielletty Nettivaraston asetuksissa."
+
+#~ msgid "Send Order to Nettivarasto"
+#~ msgstr "Lähetä tilaus Nettivarastoon"
+
+#~ msgid "Nettivarasto change of status to SHIPPED."
+#~ msgstr "Nettivaraston tila: SHIPPED."
+
+#~ msgid "Nettivarasto change of status to CANCELLED."
+#~ msgstr "Nettivaraston tila: CANCELLED."
+
+#~ msgid "Nettivarasto change of status to COLLECTING."
+#~ msgstr "Nettivaraston tila: COLLECTING."
+
+#~ msgid "Nettivarasto change of status to PENDING."
+#~ msgstr "Nettivaraston tila: PENDING."
+
+#~ msgid "Nettivarasto change of status to RESERVED."
+#~ msgstr "Nettivaraston tila: RESERVED."
+
+#~ msgid "Product and order data updated from Nettivarasto."
+#~ msgstr "Tuotteiden ja tilausten tiedot päivitetty Nettivarastosta."
 
 #~ msgid "Tracking number"
 #~ msgstr "Seurantakoodi"

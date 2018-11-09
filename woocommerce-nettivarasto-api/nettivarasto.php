@@ -1,9 +1,9 @@
 <?php
 /**
- * Plugin Name: OGOShip / Nettivarasto API for WooCommerce
+ * Plugin Name: OGOShip API for WooCommerce
  * Plugin URI: https://github.com/ogoship/woocommerce
- * Description: Integrate WooCommerce with OGOship (https://ogoship.com).
- * Author: OGOShip / Nettivarasto
+ * Description: Integrate WooCommerce with OGOship / Nettivarasto (https://ogoship.com).
+ * Author: OGOShip
  * Author URI: https://www.ogoship.com
  * Version: 3.3.3
  * Text Domain: ogoship-nettivarasto-api-for-woocommerce
@@ -16,9 +16,8 @@
  * License: GNU General Public License v3.0
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  *
- * @package   WC-Nettivarasto
- * @author    OGOShip / Nettivarasto.
- * @category  
+ * @package   WC-OGOship
+ * @author    OGOShip
  * @copyright Copyright (c) 2018, Koivua Oy
  * @license   http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
@@ -308,15 +307,15 @@ class nv_wc_api {
 
     function add_nettivarasto_shipping_method_settings($fields) {
       $fields['nettivarasto_send'] = array(
-                        'title'   => __( 'Transfer to Nettivarasto', 'ogoship-nettivarasto-api-for-woocommerce' ),
+                        'title'   => __( 'Transfer to OGOship', 'ogoship-nettivarasto-api-for-woocommerce' ),
                         'type'    => 'checkbox',
-                        'label'   => __( 'Transfer orders made by this shipping method automatically to Nettivarasto.', 'ogoship-nettivarasto-api-for-woocommerce' ),
+                        'label'   => __( 'Transfer orders made by this shipping method automatically to OGOship.', 'ogoship-nettivarasto-api-for-woocommerce' ),
                         'default' => 'no',
                         ); 
       $fields['nettivarasto_delivery_type_id'] = array(
-                        'title'   => __( 'Nettivarasto Delivery Type', 'ogoship-nettivarasto-api-for-woocommerce' ),
+                        'title'   => __( 'OGOship Delivery Type', 'ogoship-nettivarasto-api-for-woocommerce' ),
                         'type'    => 'input',
-                        'desc_tip'   => __( 'Set external code of the Nettivarasto delivery type for this shipping method.', 'ogoship-nettivarasto-api-for-woocommerce' ),
+                        'desc_tip'   => __( 'Set external code of the OGOship delivery type for this shipping method.', 'ogoship-nettivarasto-api-for-woocommerce' ),
                         'default' => '',
                         );   
       return $fields;
@@ -325,14 +324,14 @@ class nv_wc_api {
   function add_nettivarasto_general_settings( $settings ) {
     $updated_settings = $settings;
     $updated_settings[] = array(
-        'name'    => __( 'Nettivarasto General Settings', 'ogoship-nettivarasto-api-for-woocommerce' ),
+        'name'    => __( 'OGOship General Settings', 'ogoship-nettivarasto-api-for-woocommerce' ),
         'type'    => 'title',
-        'desc'    => '<p>'.__('The following are Nettivarasto general settings.', 'ogoship-nettivarasto-api-for-woocommerce').'</p><h4>'
+        'desc'    => '<p>'.__('The following are OGOship general settings.', 'ogoship-nettivarasto-api-for-woocommerce').'</p><h4>'
 		.__('Export', 'ogoship-nettivarasto-api-for-woocommerce').'</h4><p><a href="?page=wc-settings&export_all=true">'
 		.__('Click here', 'ogoship-nettivarasto-api-for-woocommerce').'</a> '.__('to export all products to Nettivarasto', 'ogoship-nettivarasto-api-for-woocommerce')
 		.'.</p><h4>'.__('Update Orders and Products', 'ogoship-nettivarasto-api-for-woocommerce')
 		.'</h4><p><a href="?page=wc-settings&get_latest_changes=true">'.__('Click here', 'ogoship-nettivarasto-api-for-woocommerce')
-		.'</a> '.__('to update product and order info from Nettivarasto', 'ogoship-nettivarasto-api-for-woocommerce').'.</p>
+		.'</a> '.__('to update product and order info from OGOship', 'ogoship-nettivarasto-api-for-woocommerce').'.</p>
 		<h4>'.__('Check duplicate and empty SKUs', 'ogoship-nettivarasto-api-for-woocommerce').'</h4>
 		<p><a href="?page=wc-settings&sku_duplicate=true#popup1">'.__('Click here', 'ogoship-nettivarasto-api-for-woocommerce')
 		.'</a> '.__('to view the duplicate and empty sku products', 'ogoship-nettivarasto-api-for-woocommerce').'.</p>',
@@ -351,27 +350,27 @@ class nv_wc_api {
 	}
     $updated_settings[] = array(
         'type'    => 'title',
-        'desc'    => __('Latest successful update from Nettivarasto', 'ogoship-nettivarasto-api-for-woocommerce') . ': ' . $timestampstr,
+        'desc'    => __('Latest successful update from OGOship', 'ogoship-nettivarasto-api-for-woocommerce') . ': ' . $timestampstr,
         'id'    => 'nettivarasto_latest_success_time'
     );
 
     $updated_settings[] = array(
       'name'      => __( 'Merchant ID', 'ogoship-nettivarasto-api-for-woocommerce' ),
-      'desc_tip'  => __( 'Insert Merchant ID from Nettivarasto', 'ogoship-nettivarasto-api-for-woocommerce' ),
+      'desc_tip'  => __( 'Insert Merchant ID from OGOship', 'ogoship-nettivarasto-api-for-woocommerce' ),
       'id'        => 'woocommerce_nettivarasto_merchant_id',
       'type'      => 'text',
       'css'       => 'min-width:300px;'
     );
     $updated_settings[] = array(
       'name'      => __( 'Secret Token', 'ogoship-nettivarasto-api-for-woocommerce' ),
-      'desc_tip'  => __( 'Insert Nettivarasto Secret token', 'ogoship-nettivarasto-api-for-woocommerce' ),
+      'desc_tip'  => __( 'Insert OGOship Secret token', 'ogoship-nettivarasto-api-for-woocommerce' ),
       'id'        => 'woocommerce_nettivarasto_secret_token',
       'type'      => 'text',
       'css'       => 'min-width:300px;'
     );
 	 $updated_settings[] = array(
       'name'      => __( 'Deny product export', 'ogoship-nettivarasto-api-for-woocommerce' ),
-      'desc_tip'  => __( 'This option will deny the product export to Nettivarasto', 'ogoship-nettivarasto-api-for-woocommerce' ),
+      'desc_tip'  => __( 'This option will deny the product export to OGOship', 'ogoship-nettivarasto-api-for-woocommerce' ),
       'id'        => 'woocommerce_deny_export_product',
       'type'      => 'checkbox',
       'css'       => 'min-width:300px;'
@@ -403,7 +402,7 @@ class nv_wc_api {
             'label'       => __( 'Supplier:', 'ogoship-nettivarasto-api-for-woocommerce' ), 
             'placeholder' => '',
             'desc_tip'    => 'true',
-            'description' => __( 'Enter name of supplier for Nettivarasto.', 'ogoship-nettivarasto-api-for-woocommerce' ) 
+            'description' => __( 'Enter name of supplier for OGOship.', 'ogoship-nettivarasto-api-for-woocommerce' ) 
         )
     );
     woocommerce_wp_text_input( 
@@ -412,7 +411,7 @@ class nv_wc_api {
             'label'       => __( 'Supplier code:', 'ogoship-nettivarasto-api-for-woocommerce' ), 
             'placeholder' => '',
             'desc_tip'    => 'true',
-            'description' => __( 'Enter code of supplier for Nettivarasto.', 'ogoship-nettivarasto-api-for-woocommerce' ) 
+            'description' => __( 'Enter code of supplier for OGOship.', 'ogoship-nettivarasto-api-for-woocommerce' ) 
         )
     );
     woocommerce_wp_text_input( 
@@ -421,7 +420,7 @@ class nv_wc_api {
             'label'       => __( 'Group:', 'ogoship-nettivarasto-api-for-woocommerce' ), 
             'placeholder' => '',
             'desc_tip'    => 'true',
-            'description' => __( 'Enter group of product for Nettivarasto.', 'ogoship-nettivarasto-api-for-woocommerce' ) 
+            'description' => __( 'Enter group of product for OGOship.', 'ogoship-nettivarasto-api-for-woocommerce' ) 
         )
     );
     woocommerce_wp_text_input( 
@@ -430,7 +429,7 @@ class nv_wc_api {
             'label'       => __( 'Purchase price:', 'ogoship-nettivarasto-api-for-woocommerce' ), 
             'placeholder' => '',
             'desc_tip'    => 'true',
-            'description' => __( 'Enter purchase for Nettivarasto.', 'ogoship-nettivarasto-api-for-woocommerce' ) 
+            'description' => __( 'Enter purchase price for OGOship.', 'ogoship-nettivarasto-api-for-woocommerce' ) 
         )
     );
 	
@@ -446,8 +445,8 @@ class nv_wc_api {
     woocommerce_wp_checkbox( 
         array( 
             'id'          => '_nettivarasto_no_export', 
-            'description' => __( 'Check if you do <strong>not</strong> want to export this product automatically to Nettivarasto.', 'ogoship-nettivarasto-api-for-woocommerce' ), 
-            'label'       => __( 'Do not export to Nettivarasto', 'ogoship-nettivarasto-api-for-woocommerce' ),
+            'description' => __( 'Check if you do <strong>not</strong> want to export this product automatically to OGOship.', 'ogoship-nettivarasto-api-for-woocommerce' ), 
+            'label'       => __( 'Do not export to OGOship', 'ogoship-nettivarasto-api-for-woocommerce' ),
             'cbvalue'     => 'yes'
         )
     );
@@ -541,14 +540,14 @@ class nv_wc_api {
   
       $order->setShipping($nettivarasto_shipping_method);
       if ( $order->save() ) {
-          $WC_order->add_order_note(__('Order transferred to Nettivarasto', 'ogoship-nettivarasto-api-for-woocommerce'), 0);
-          $this->notice = __('Order transferred to Nettivarasto', 'ogoship-nettivarasto-api-for-woocommerce');
+          $WC_order->add_order_note(__('Order transferred to OGOship', 'ogoship-nettivarasto-api-for-woocommerce'), 0);
+          $this->notice = __('Order transferred to OGOship', 'ogoship-nettivarasto-api-for-woocommerce');
           return;
       }
       else {
           $WC_order->add_order_note(__('Error', 'ogoship-nettivarasto-api-for-woocommerce').': '.$this->api->getLastError().' <a href="?post='
 			. $WC_order->get_id().'&action=edit&send_to_nv=true">'.__('Send order again.', 'ogoship-nettivarasto-api-for-woocommerce').'</a>', 0);
-          wp_mail( get_option( 'admin_email' ), 'Error - Nettivarasto API', $this->api->getLastError() ); 
+          wp_mail( get_option( 'admin_email' ), 'Error - OGOship API', $this->api->getLastError() ); 
       return; 
       }    
 
@@ -624,7 +623,7 @@ class nv_wc_api {
   
   function update_all_products() {
 	if($this->denyExport=="yes"){
-		$this->notice = __('Product export denied in the Nettivarasto settings.', 'ogoship-nettivarasto-api-for-woocommerce');
+		$this->notice = __('Product export denied in the OGOship settings.', 'ogoship-nettivarasto-api-for-woocommerce');
 		return;
 	}
 
@@ -778,7 +777,7 @@ class nv_wc_api {
     if($this->notice) {
       ?>
       <div class="updated">
-          <p><?php echo '<strong>Nettivarasto:</strong> '.$this->notice; ?></p>
+          <p><?php echo '<strong>OGOship:</strong> '.$this->notice; ?></p>
       </div>
       <?php
     }
@@ -786,7 +785,7 @@ class nv_wc_api {
     if($this->error) {
       ?>
       <div class="error">
-          <p><?php echo '<strong>Nettivarasto:</strong> '.$this->error; ?></p>
+          <p><?php echo '<strong>OGOship:</strong> '.$this->error; ?></p>
       </div>
       <?php
     }
@@ -794,7 +793,7 @@ class nv_wc_api {
   }
 
   function add_order_meta_box_actions($order) {
-    $actions['nv_send_order_to_nettivarasto'] = __( 'Send Order to Nettivarasto', 'ogoship-nettivarasto-api-for-woocommerce' );
+    $actions['nv_send_order_to_nettivarasto'] = __( 'Send Order to OGOship', 'ogoship-nettivarasto-api-for-woocommerce' );
     return $actions;
   }
   
@@ -838,24 +837,24 @@ class nv_wc_api {
                 switch ( $latestOrder->getStatus() ) {
                     case  'SHIPPED': 
                         update_post_meta( $order_id, 'nettivarasto_tracking', $latestOrder->getTrackingNumber() );
-                        $WC_order->add_order_note(__('Nettivarasto change of status to SHIPPED.', 'ogoship-nettivarasto-api-for-woocommerce'), 0);
+                        $WC_order->add_order_note(__('OGOship change of status to SHIPPED.', 'ogoship-nettivarasto-api-for-woocommerce'), 0);
                         $WC_order->add_order_note(__('Tracking code', 'ogoship-nettivarasto-api-for-woocommerce').': '.$latestOrder->getTrackingNumber(), 0);
                         $WC_order->update_status('completed');
                         break;
                     case  'CANCELLED':
-                        $WC_order->add_order_note(__('Nettivarasto change of status to CANCELLED.', 'ogoship-nettivarasto-api-for-woocommerce'), 0);
+                        $WC_order->add_order_note(__('OGOship change of status to CANCELLED.', 'ogoship-nettivarasto-api-for-woocommerce'), 0);
                         break;
                     case  'COLLECTING':
-                        $WC_order->add_order_note(__('Nettivarasto change of status to COLLECTING.', 'ogoship-nettivarasto-api-for-woocommerce'), 0);
+                        $WC_order->add_order_note(__('OGOship change of status to COLLECTING.', 'ogoship-nettivarasto-api-for-woocommerce'), 0);
                         break;
                     case  'PENDING':
-                        $WC_order->add_order_note(__('Nettivarasto change of status to PENDING.', 'ogoship-nettivarasto-api-for-woocommerce'), 0);
+                        $WC_order->add_order_note(__('OGOship change of status to PENDING.', 'ogoship-nettivarasto-api-for-woocommerce'), 0);
                         break;
                     case  'RESERVED':
-                        $WC_order->add_order_note(__('Nettivarasto change of status to RESERVED.', 'ogoship-nettivarasto-api-for-woocommerce'), 0);
+                        $WC_order->add_order_note(__('OGOship change of status to RESERVED.', 'ogoship-nettivarasto-api-for-woocommerce'), 0);
                         break;
                     case  'DRAFT':
-                        $WC_order->add_order_note(__('Nettivarasto change of status to DRAFT.', 'ogoship-nettivarasto-api-for-woocommerce'), 0);
+                        $WC_order->add_order_note(__('OGOship change of status to DRAFT.', 'ogoship-nettivarasto-api-for-woocommerce'), 0);
                         break;
                 }
             }
@@ -879,7 +878,7 @@ class nv_wc_api {
       }
     }
     update_option('nettivarasto_latest_changes_timestamp', $this->api->getTimestamp());
-    $this->notice = __('Product and order data updated from Nettivarasto.', 'ogoship-nettivarasto-api-for-woocommerce');
+    $this->notice = __('Product and order data updated from OGOship.', 'ogoship-nettivarasto-api-for-woocommerce');
   }
   
   function get_product_by_sku( $sku ) {
