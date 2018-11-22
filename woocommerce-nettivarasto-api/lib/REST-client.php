@@ -74,10 +74,20 @@ class NettivarastoAPI_RESTclient
             . "User-Agent: " . $this->restClientVersion . " (" . $this->pluginVersion . ")\r\n" ,
             'method' => $this->method,
             'content' => json_encode($this->dataArray)
+        ),
+        'ssl' => array(
+            'peer_name' => "my.ogoship.com",
+            'SNI_enabled' => true,
+            'verify_peer' => true,
+            'verify_peer_name' => true,
+            'verify_depth' => 5,
+            'ciphers' => 'HIGH:!SSLv2:!SSLv3',
+            'disable_compression' => true,
+            'cafile' => __DIR__ . '/ca.pem',
         )
     ));
     // do the request
-    $result = file_get_contents("http://my.ogoship.com" . $this->url, false, $context);
+    $result = file_get_contents("https://my.ogoship.com" . $this->url, false, $context);
 
     // Response data type.
     if ($this->json)
