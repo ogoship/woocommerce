@@ -86,14 +86,104 @@ class NettivarastoAPI_RESTclient
             'cafile' => __DIR__ . '/ca.pem',
         )
     ));
-    // do the request
-    $result = file_get_contents("https://my.ogoship.com" . $this->url, false, $context);
+    try{
+        // do the request
+        $data = file_get_contents("https://my.ogoship.com" . $this->url, false, $context);
+        if($data === FALSE){
+            goto FALLBACK;
+        }
+        goto FINISH;
+     } catch(Exception $err)
+    {
+        $this->api->setError(print_r($err, true)); 
+        goto FALLBACK;
+    }
+FALLBACK:
 
+    // Open HTTP-connection.
+    $ip = 'my.ogoship.com';
+    $fp = @fsockopen($ip, 80, $errno, $errstr, 5);
+    $result = '';
+    if (!$fp)
+    {
+      return false;
+    }
+
+    // Create HTTP-request.
+    $out = $this->method . ' ' . $this->url . " HTTP/1.1\r\n";
+    $out .= 'Host: ' . $ip . "\r\n";
+    if ($this->json)
+    {
+      $out .= "Content-type: application/json\r\n";
+    }
+    else
+    {
+      $out .= "Content-type: application/xml\r\n";
+    }
+    $out .= "Connection: close\r\n";
+
+    // Append data to HTTP-request.
+    $data = false;
+    if (count($this->dataArray) > 0)
+    {
+      if ($this->json)
+      {
+        // JSON.
+        $data = json_encode($this->dataArray);
+      }
+      else
+      {
+        // XML.
+
+        /// \todo XML
+        $data = '<todo></todo>';
+      }
+
+      $out .= 'Content-Length: ' . strlen($data) . "\r\n";
+    }
+    $out .= "\r\n";
+    if ($data !== false)
+    {
+      $out .= $data;
+    }
+    
+    // Send HTTP-request.
+    if (@fwrite($fp, $out) === false)
+    {
+      @fclose($fp);
+      return false;
+    }
+    while (!@feof($fp))
+    {
+      $result .= fgets($fp, 128);
+    }
+    @fclose($fp);
+
+    // Extract data from HTTP-response.
+    $header = true;
+    $data = '';
+    foreach(preg_split("/(\r?\n)/", $result) as $line)
+    {
+      if ($line == '')
+      {
+        $header = false;
+      }
+      else if (!$header)
+      {
+        $data .= $line . "\n";
+      }
+    }
+    if ($data == '')
+    {
+      return false;
+    }
+
+FINISH:
     // Response data type.
     if ($this->json)
     {
       // JSON response.
-      $jsonData = @json_decode($result, true);
+      $jsonData = @json_decode($data, true);
       $resultArray = $jsonData;
       if ($jsonData === null)
       {

@@ -5,7 +5,7 @@
  * Description: Integrate WooCommerce with OGOship / Nettivarasto (https://ogoship.com).
  * Author: OGOShip
  * Author URI: https://www.ogoship.com
- * Version: 3.3.3
+ * Version: 3.3.4
  * Text Domain: ogoship-nettivarasto-api-for-woocommerce
  * Domain Path: /i18n/languages/
  * WC requires at least: 3.0.0
@@ -816,7 +816,7 @@ class nv_wc_api {
 			if(isset($matches['key'])){
 				$order_id = wc_get_order_id_by_order_key('wc_order_' . $matches['key']);
 			}
-			if(isset($matches['id']) && $order_id == 0)
+			elseif(isset($matches['id']) && $order_id == 0)
 			{
 				$order_id = $matches['id'];
 			}
@@ -836,10 +836,13 @@ class nv_wc_api {
                 }
                 switch ( $latestOrder->getStatus() ) {
                     case  'SHIPPED': 
-                        update_post_meta( $order_id, 'nettivarasto_tracking', $latestOrder->getTrackingNumber() );
-                        $WC_order->add_order_note(__('OGOship change of status to SHIPPED.', 'ogoship-nettivarasto-api-for-woocommerce'), 0);
-                        $WC_order->add_order_note(__('Tracking code', 'ogoship-nettivarasto-api-for-woocommerce').': '.$latestOrder->getTrackingNumber(), 0);
-                        $WC_order->update_status('completed');
+						if(!$WC_order->has_status('completed'))
+						{
+							update_post_meta( $order_id, 'nettivarasto_tracking', $latestOrder->getTrackingNumber() );
+							$WC_order->add_order_note(__('OGOship change of status to SHIPPED.', 'ogoship-nettivarasto-api-for-woocommerce'), 0);
+							$WC_order->add_order_note(__('Tracking code', 'ogoship-nettivarasto-api-for-woocommerce').': '.$latestOrder->getTrackingNumber(), 0);
+							$WC_order->update_status('completed');
+						}
                         break;
                     case  'CANCELLED':
                         $WC_order->add_order_note(__('OGOship change of status to CANCELLED.', 'ogoship-nettivarasto-api-for-woocommerce'), 0);
