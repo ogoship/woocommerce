@@ -5,11 +5,11 @@
  * Description: Integrate WooCommerce with OGOship / Nettivarasto (https://ogoship.com).
  * Author: OGOShip
  * Author URI: https://www.ogoship.com
- * Version: 3.3.4
+ * Version: 3.3.6
  * Text Domain: ogoship-nettivarasto-api-for-woocommerce
  * Domain Path: /i18n/languages/
  * WC requires at least: 3.0.0
- * WC tested up to: 3.5.1
+ * WC tested up to: 3.5.4
  *
  * Copyright: (c) 2018 Koivua Oy.
  *
@@ -46,14 +46,15 @@ class nv_wc_api {
 		$this->denyExport = get_option('woocommerce_deny_export_product');
 		$this->checkDuplicateSKU = get_option('woocommerce_check_duplicate_sku');
 
+        $this->version = "Woocommerce 3.3.X";
         if ( is_admin() ) {
             if( !function_exists('get_plugin_data') ){
                 require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
                 $pluginfo = get_plugin_data(__FILE__, false, false);
+                if(isset($pluginfo) && is_array($pluginfo) && isset($pluginfo["Version"])) {
+                    $this->version = "Woocommerce " . $pluginfo["Version"];
+                }
             }
-            $this->version = "Woocommerce " . $pluginfo["Version"];
-        } else {
-            $this->version = "Woocommerce 3.3.X";
         }
 
         $this->api = new NettivarastoAPI($this->merchantID, $this->secretToken, $this->version);
