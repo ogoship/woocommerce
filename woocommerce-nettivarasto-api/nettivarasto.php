@@ -5,7 +5,7 @@
  * Description: Integrate WooCommerce with OGOship / Nettivarasto (https://ogoship.com).
  * Author: OGOShip
  * Author URI: https://www.ogoship.com
- * Version: 3.3.6
+ * Version: 3.3.7
  * Text Domain: ogoship-nettivarasto-api-for-woocommerce
  * Domain Path: /i18n/languages/
  * WC requires at least: 3.0.0
@@ -810,7 +810,7 @@ class nv_wc_api {
       
     if($latestOrders) {
         foreach($latestOrders as $latestOrder) {
-			if(!preg_match('/^(?<id>\d+)-?(?<key>[a-z0-9]+)?$/', $latestOrder->getReference(), $matches)){
+			if(!preg_match('/^(?<id>\d+)-?(?<key>[a-z0-9]+)?$/i', $latestOrder->getReference(), $matches)){
 				continue;
 			}
 			$order_id = 0;
