@@ -532,12 +532,17 @@ class nv_wc_api {
       $order->setCustomerEmail( get_post_meta($order_id, '_billing_email', true) );
       $order->setCustomerPhone( get_post_meta($order_id, '_billing_phone', true) );
       $order->setCustomerZip($WC_order->get_shipping_postcode());
-      $order->setComments($WC_order->get_customer_note());	  
-      $pupcode = get_post_meta($order_id, '_woo_carrier_agent_id', true);
-      if(trim($pupcode) != "") {
-        $order->setPickUpPointCode(trim($pupcode));
-	  }
-  
+      $order->setComments($WC_order->get_customer_note());
+
+      $pupMeta = array("_woo_carrier_agent_id", "_wc_posti_pickup_id", "_wc_schenker_pickup_id");
+      foreach($pupMeta as $metafield)
+      {
+        $pupcode = get_post_meta($order_id, $metafield, true);
+        if(trim($pupcode) != "") {
+            $order->setPickUpPointCode(trim($pupcode));
+            break;
+	    }
+      }
       $order->setShipping($nettivarasto_shipping_method);
       if ( $order->save() ) {
           $WC_order->add_order_note(__('Order transferred to OGOship', 'ogoship-nettivarasto-api-for-woocommerce'), 0);
