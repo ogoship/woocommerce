@@ -329,7 +329,7 @@ class nv_wc_api {
         'type'    => 'title',
         'desc'    => '<p>'.__('The following are OGOship general settings.', 'ogoship-nettivarasto-api-for-woocommerce').'</p><h4>'
 		.__('Export', 'ogoship-nettivarasto-api-for-woocommerce').'</h4><p><a href="?page=wc-settings&export_all=true">'
-		.__('Click here', 'ogoship-nettivarasto-api-for-woocommerce').'</a> '.__('to export all products to Nettivarasto', 'ogoship-nettivarasto-api-for-woocommerce')
+		.__('Click here', 'ogoship-nettivarasto-api-for-woocommerce').'</a> '.__('to export all products to OGOship', 'ogoship-nettivarasto-api-for-woocommerce')
 		.'.</p><h4>'.__('Update Orders and Products', 'ogoship-nettivarasto-api-for-woocommerce')
 		.'</h4><p><a href="?page=wc-settings&get_latest_changes=true">'.__('Click here', 'ogoship-nettivarasto-api-for-woocommerce')
 		.'</a> '.__('to update product and order info from OGOship', 'ogoship-nettivarasto-api-for-woocommerce').'.</p>
@@ -395,7 +395,6 @@ class nv_wc_api {
   */
   function add_custom_product_general_fields() {
 	global $product_object;
-	$getSkuValue = $product_object->get_sku( 'edit' );
 	
     woocommerce_wp_text_input( 
         array( 
@@ -434,7 +433,7 @@ class nv_wc_api {
         )
     );
 	
-	if(empty($getSkuValue)){ ?>
+	if(empty($product_object->get_sku( 'edit' )) && $product_object->is_type('simple')){ ?>
 		<script type="text/javascript">
 		jQuery(document).ready(function(){
 			jQuery('#_nettivarasto_no_export').prop('checked', true);
