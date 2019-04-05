@@ -5,7 +5,7 @@
  * Description: Integrate WooCommerce with OGOship / Nettivarasto (https://ogoship.com).
  * Author: OGOShip
  * Author URI: https://www.ogoship.com
- * Version: 3.3.7
+ * Version: 3.3.9
  * Text Domain: ogoship-nettivarasto-api-for-woocommerce
  * Domain Path: /i18n/languages/
  * WC requires at least: 3.0.0
@@ -525,6 +525,10 @@ class nv_wc_api {
       $order->setPriceTotal($WC_order->get_total());
 	  $order->setPriceCurrency($WC_order->get_currency());
       $order->setCustomerName($WC_order->get_shipping_first_name().' '.$WC_order->get_shipping_last_name());
+      if($WC_order->get_shipping_company() != '')
+      {
+          $order->setCustomerCompany($WC_order->get_shipping_company());
+      }
       $order->setCustomerAddress1($WC_order->get_shipping_address_1());
       $order->setCustomerAddress2($WC_order->get_shipping_address_2());
       $order->setCustomerCity($WC_order->get_shipping_city());
