@@ -5,11 +5,11 @@
  * Description: Integrate WooCommerce with OGOship / Nettivarasto (https://ogoship.com).
  * Author: OGOShip
  * Author URI: https://www.ogoship.com
- * Version: 3.3.9
+ * Version: 3.4.0
  * Text Domain: ogoship-nettivarasto-api-for-woocommerce
  * Domain Path: /i18n/languages/
  * WC requires at least: 3.0.0
- * WC tested up to: 3.5.4
+ * WC tested up to: 3.5.7
  *
  * Copyright: (c) 2018 Koivua Oy.
  *
@@ -539,6 +539,24 @@ class nv_wc_api {
       $order->setComments($WC_order->get_customer_note());
 
       $pupMeta = array("_woo_carrier_agent_id", "_wc_posti_pickup_id", "_wc_schenker_pickup_id");
+      $shippingMeta = array("_woo_carrier_agent_id", "_wc_posti_pickup_id", "_wc_schenker_pickup_id");
+	  $shipping = $WC_order->get_items('shipping');
+	  foreach($shipping as $sitem)
+	  {
+		  foreach($shippingMeta as $shipmeta)
+		  {
+			  if(isset($sitem[$shipmeta]))
+			  {
+				  $spup = $sitem[$shipmeta];
+				  if(trim($spup) != "")
+				  {
+				  	$order->setPickUpPointCode(trim($spup));
+				  }
+			  	break;
+		  	}
+		  }
+	  }
+
       foreach($pupMeta as $metafield)
       {
         $pupcode = get_post_meta($order_id, $metafield, true);
