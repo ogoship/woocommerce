@@ -48,6 +48,10 @@ class NettivarastoAPI
   	$strParameters = array("product","all");
     $restClient = new NettivarastoAPI_RESTclient($this, 'POST', '/Products', $strParameters);
     $restClient->setPostData($products);
+    if($this->pluginVersion !== '')
+    {
+        $restClient->setVersion($this->pluginVersion);
+    }
     $resultArray = array();
     $success = $restClient->execute($resultArray);
     return $resultArray;
