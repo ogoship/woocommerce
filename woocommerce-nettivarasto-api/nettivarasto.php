@@ -586,8 +586,9 @@ class nv_wc_api {
 
             if(isset($sent_skus[$productSku]))
             {
-                $this->error .= __('Product not sent', 'ogoship-nettivarasto-api-for-woocommerce') . ':"' . $WC_child_product->get_name() . ' (' . $variations . ')": ' . __('Duplicate SKU', 'ogoship-nettivarasto-api-for-woocommerce') . ' (' . $productSku . '):'
-                     . ' ' . __('with', 'ogoship-nettivarasto-api-for-woocommerce') . ' "'. $sent_skus[$productSku] . '"<br>';
+                $this->error .= __('Product not sent', 'ogoship-nettivarasto-api-for-woocommerce') . ':"' . $WC_child_product->get_name() . '(' . $variations . ')": '
+                . __('Duplicate SKU', 'ogoship-nettivarasto-api-for-woocommerce') . ': ' . $productSku . ': '
+                . __('also used by', 'ogoship-nettivarasto-api-for-woocommerce') . ':"'. $sent_skus[$productSku] . '"<br>';
                 continue;
             } else {
                 $sent_skus[$productSku] = $WC_child_product->get_name() . ' (' . $variations . ')';
@@ -634,8 +635,9 @@ class nv_wc_api {
 
           if(isset($sent_skus[$productSku]))
           {
-              $this->error .= __('Product not sent', 'ogoship-nettivarasto-api-for-woocommerce') . ':"' . $WC_product->get_name() . '": ' . __('Duplicate SKU', 'ogoship-nettivarasto-api-for-woocommerce') . ' (' . $productSku . '):'
-                . ' ' . __('with', 'ogoship-nettivarasto-api-for-woocommerce') . ' "'. $sent_skus[$productSku] . '"<br>';
+              $this->error .= __('Product not sent', 'ogoship-nettivarasto-api-for-woocommerce') . ':"' . $WC_product->get_name() . '": '
+              . __('Duplicate SKU', 'ogoship-nettivarasto-api-for-woocommerce') . ': ' . $productSku . ': '
+              . __('also used by', 'ogoship-nettivarasto-api-for-woocommerce') . ':"'. $sent_skus[$productSku] . '"<br>';
               continue;
           } else {
               $sent_skus[$productSku] = $WC_product->get_name();
