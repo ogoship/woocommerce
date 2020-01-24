@@ -5,7 +5,7 @@
  * Description: Integrate WooCommerce with OGOship / Nettivarasto (https://ogoship.com).
  * Author: OGOShip
  * Author URI: https://www.ogoship.com
- * Version: 3.5.0
+ * Version: 3.5.2
  * Text Domain: ogoship-nettivarasto-api-for-woocommerce
  * Domain Path: /i18n/languages/
  * WC requires at least: 3.0.0
@@ -72,14 +72,10 @@ class nv_wc_api {
         add_action('wp_loaded', array( &$this, 'after_wp_load') );
 
         add_action('get_latest_changes_hook', array( &$this, 'get_latest_changes') );
-        if(get_option('woocommerce_nv_payment_hook_enable') == 'yes')
-        {
-            add_action('woocommerce_payment_complete', array( &$this, 'save_order_to_nettivarasto') ,10,1);
-        }
-        if(get_option('woocommerce_nv_processing_hook_enable') == 'yes')
-        {
-            add_action('woocommerce_order_status_processing', array( &$this, 'save_order_to_nettivarasto') ,10,1);
-        }
+
+        add_action('woocommerce_payment_complete', array( &$this, 'nv_handle_payment_hook') ,10,1);
+
+        add_action('woocommerce_order_status_processing', array( &$this, 'nv_handle_processing_hook') ,10,1);
 
         add_action('admin_notices', array( &$this, 'show_notice' ), '10');
         add_action( 'woocommerce_order_actions', array( $this, 'add_order_meta_box_actions' ) );
@@ -100,16 +96,37 @@ class nv_wc_api {
 
     function check_latest_changes_hook()
     {
-        if(get_option('woocommerce_nettivarasto_hourly_updates') != 'yes')
+        if(get_option('woocommerce_nettivarasto_hourly_updates') && get_option('woocommerce_nettivarasto_hourly_updates') != 'no')
         {
+            if(!wp_next_scheduled( 'get_latest_changes_hook' ))
+            {
+                $this->activate_nettivarasto();
+            }
+        } else {
             if(wp_next_scheduled( 'get_latest_changes_hook' ))
             {
                 $this->deactivate_nettivarasto();
             }
-        } else {
-            if(!wp_next_scheduled( 'get_latest_changes_hook' ))
+        }
+    }
+
+    function nv_handle_processing_hook($order_id = ''){
+        if($order_id != '')
+        {
+            $processing_hook_enable = get_option('woocommerce_nv_processing_hook_enable');
+            if(isset($processing_hook_enable) && $processing_hook_enable != 'no' && $processing_hook_enable)
             {
-                $this->activate_nettivarasto();
+                $this->save_order_to_nettivarasto($order_id);
+            }
+        }
+    }
+    function nv_handle_payment_hook($order_id = ''){
+        if($order_id != '')
+        {
+            $payment_hook_enable = get_option('woocommerce_nv_payment_hook_enable');
+            if(isset($payment_hook_enable) && $processing_hook_enable != 'no' && $payment_hook_enable)
+            {
+                $this->save_order_to_nettivarasto($order_id);
             }
         }
     }
