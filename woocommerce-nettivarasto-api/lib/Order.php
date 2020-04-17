@@ -98,7 +98,17 @@ class NettivarastoAPI_Order extends NettivarastoAPI_Object
   {
     $this->setAttribute('Shipping', $value);
   }
+
+  function getShippingCode()
+  {
+    return $this->getAttribute('ShippingCode');
+  }
   
+  function setShippingCode($value)
+  {
+    $this->setAttribute('ShippingCode', $value);
+  }
+
   /**
    * Get reference number of order.
    */

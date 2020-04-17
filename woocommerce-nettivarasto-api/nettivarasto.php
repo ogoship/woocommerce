@@ -423,6 +423,7 @@ class nv_wc_api {
     $shipping_methods = $WC_order->get_shipping_methods(); 
     foreach ( $shipping_methods as $shipping_method ) {
         $method_id = $shipping_method->get_method_id();
+        $method_name = $shipping_method->get_method_title();
         // WC 3.4 ->
         if(strpos($method_id, ':') === FALSE)
         {
@@ -503,7 +504,8 @@ class nv_wc_api {
             break;
 	    }
       }
-      $order->setShipping($nettivarasto_shipping_method);
+      $order->setShippingCode($nettivarasto_shipping_method);
+      $order->setShipping($method_name);
       if ( $order->save() ) {
           $WC_order->add_order_note(__('Order transferred to OGOship', 'ogoship-nettivarasto-api-for-woocommerce'), 0);
           $this->notice = __('Order transferred to OGOship', 'ogoship-nettivarasto-api-for-woocommerce');
