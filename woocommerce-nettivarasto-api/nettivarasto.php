@@ -855,16 +855,30 @@ class nv_wc_api {
     if ( $plain_text ) {
       //Do this if we have a plain email
       $tracking_code = get_post_meta( $order->get_id(), 'nettivarasto_tracking', true );
+      if(get_post_meta( $order->get_id(), 'ogoship_tracking_url', true )){
+        $tracking_code = get_post_meta( $order->get_id(), 'ogoship_tracking_url', true );
+      }
       if($tracking_code) {
         echo "\n".__('Tracking code', 'ogoship-nettivarasto-api-for-woocommerce').': '.$tracking_code."\n";
       }
     } else {
       //Do this if we have a normal email
       $tracking_code = get_post_meta( $order->get_id(), 'nettivarasto_tracking', true );
-      if($tracking_code) {
+      if(get_post_meta( $order->get_id(), 'ogoship_tracking', true )){
+        $tracking_code = get_post_meta( $order->get_id(), 'ogoship_tracking', true );
+      }
+      $tracking_url = "";
+      if(get_post_meta( $order->get_id(), 'ogoship_tracking_url', true )){
+        $tracking_url = get_post_meta( $order->get_id(), 'ogoship_tracking_url', true );
+      }
+
+      if($tracking_code || $tracking_url) {
         echo '<div>';
           echo '<h3>'.__('Track Your Shipment', 'ogoship-nettivarasto-api-for-woocommerce').'</h3>';
           echo '<p>'.__('Tracking code', 'ogoship-nettivarasto-api-for-woocommerce').': '.$tracking_code.'</p>';
+        if($tracking_url){
+          echo '<p>'.__('Tracking link', 'ogoship-nettivarasto-api-for-woocommerce').': ' . '<a href="' . $tracking_url . '">' .$tracking_url.'</a></p>';
+        }
         echo '</div>';
       }
     }
