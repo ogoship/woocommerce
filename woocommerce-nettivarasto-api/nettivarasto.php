@@ -512,9 +512,12 @@ class nv_wc_api {
           return;
       }
       else {
+        if(strstr($this->api->GetLastError(), "Trying to add new order but order with same reference") == FALSE )
+        { 
           $WC_order->add_order_note(__('Error', 'ogoship-nettivarasto-api-for-woocommerce').': '.$this->api->getLastError().' <a href="?post='
 			. $WC_order->get_id().'&action=edit&send_to_nv=true">'.__('Send order again.', 'ogoship-nettivarasto-api-for-woocommerce').'</a>', 0);
           wp_mail( get_option( 'admin_email' ), 'Error - OGOship API', $this->api->getLastError() ); 
+        }
       return; 
       }    
 
