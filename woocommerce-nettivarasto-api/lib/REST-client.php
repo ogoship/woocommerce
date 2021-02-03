@@ -78,12 +78,7 @@ class NettivarastoAPI_RESTclient
         'ssl' => array(
             'peer_name' => "my.ogoship.com",
             'SNI_enabled' => true,
-            'verify_peer' => true,
-            'verify_peer_name' => true,
-            'verify_depth' => 5,
             'ciphers' => 'HIGH:!SSLv2:!SSLv3',
-            'disable_compression' => true,
-            'cafile' => __DIR__ . '/ca.pem',
         )
     ));
     try{

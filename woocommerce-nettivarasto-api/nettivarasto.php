@@ -5,11 +5,11 @@
  * Description: Integrate WooCommerce with OGOship / Nettivarasto (https://ogoship.com).
  * Author: OGOShip
  * Author URI: https://www.ogoship.com
- * Version: 3.5.2
+ * Version: 3.6.2
  * Text Domain: ogoship-nettivarasto-api-for-woocommerce
  * Domain Path: /i18n/languages/
  * WC requires at least: 3.0.0
- * WC tested up to: 3.7.0
+ * WC tested up to: 4.4.1
  *
  * Copyright: (c) 2019 OGOship Oy.
  *
@@ -186,9 +186,9 @@ class nv_wc_api {
                         'default' => 'no',
                         ); 
       $fields['nettivarasto_delivery_type_id'] = array(
-                        'title'   => __( 'OGOship Delivery Type', 'ogoship-nettivarasto-api-for-woocommerce' ),
+                        'title'   => __( 'OGOship Plugin Delivery Code', 'ogoship-nettivarasto-api-for-woocommerce' ),
                         'type'    => 'input',
-                        'desc_tip'   => __( 'Set external code of the OGOship delivery type for this shipping method.', 'ogoship-nettivarasto-api-for-woocommerce' ),
+                        'desc_tip'   => __( 'Set external code for the OGOship delivery type for this shipping method.(PLUGIN ONLY, server side integration uses shipping method name)', 'ogoship-nettivarasto-api-for-woocommerce' ),
                         'default' => '',
                         );   
       return $fields;
@@ -197,9 +197,9 @@ class nv_wc_api {
   function add_nettivarasto_general_settings( $settings ) {
     $updated_settings = $settings;
     $updated_settings[] = array(
-        'name'    => __( 'OGOship General Settings', 'ogoship-nettivarasto-api-for-woocommerce' ),
+        'name'    => __( 'OGOship Plugin General Settings', 'ogoship-nettivarasto-api-for-woocommerce' ),
         'type'    => 'title',
-        'desc'    => '<p>'.__('The following are OGOship general settings.', 'ogoship-nettivarasto-api-for-woocommerce').'</p><h4>'
+        'desc'    => '<p>'.__('The following are general settings for OGOship plugin.', 'ogoship-nettivarasto-api-for-woocommerce').'</p><h4>'
 		.__('Export', 'ogoship-nettivarasto-api-for-woocommerce').'</h4><p><a href="?page=wc-settings&export_all=true">'
 		.__('Click here', 'ogoship-nettivarasto-api-for-woocommerce').'</a> '.__('to export all products to OGOship', 'ogoship-nettivarasto-api-for-woocommerce')
 		.'.</p><h4>'.__('Update Orders and Products', 'ogoship-nettivarasto-api-for-woocommerce')
