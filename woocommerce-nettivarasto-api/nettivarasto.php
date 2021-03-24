@@ -5,20 +5,20 @@
  * Description: Integrate WooCommerce with OGOship / Nettivarasto (https://ogoship.com).
  * Author: OGOShip
  * Author URI: https://www.ogoship.com
- * Version: 3.6.2
+ * Version: 3.6.4
  * Text Domain: ogoship-nettivarasto-api-for-woocommerce
  * Domain Path: /i18n/languages/
  * WC requires at least: 3.0.0
- * WC tested up to: 4.4.1
+ * WC tested up to: 4.9.2
  *
- * Copyright: (c) 2019 OGOship Oy.
+ * Copyright: (c) 2021 OGOship Oy.
  *
  * License: GNU General Public License v3.0
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  *
  * @package   WC-OGOship
  * @author    OGOShip
- * @copyright Copyright (c) 2019, OGOship Oy
+ * @copyright Copyright (c) 2021, OGOship Oy
  * @license   http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
@@ -114,7 +114,7 @@ class nv_wc_api {
         if($order_id != '')
         {
             $processing_hook_enable = get_option('woocommerce_nv_processing_hook_enable');
-            if(isset($processing_hook_enable) && $processing_hook_enable != 'no' && $processing_hook_enable)
+            if(isset($processing_hook_enable) && $processing_hook_enable == 'yes')
             {
                 $this->save_order_to_nettivarasto($order_id);
             }
@@ -124,7 +124,7 @@ class nv_wc_api {
         if($order_id != '')
         {
             $payment_hook_enable = get_option('woocommerce_nv_payment_hook_enable');
-            if(isset($payment_hook_enable) && $processing_hook_enable != 'no' && $payment_hook_enable)
+            if(isset($payment_hook_enable) && $processing_hook_enable == 'yes')
             {
                 $this->save_order_to_nettivarasto($order_id);
             }
@@ -477,8 +477,8 @@ class nv_wc_api {
       $order->setCustomerZip($WC_order->get_shipping_postcode());
       $order->setComments($WC_order->get_customer_note());
 
-      $pupMeta = array("_woo_carrier_agent_id", "_wc_posti_pickup_id", "_wc_schenker_pickup_id");
-      $shippingMeta = array("_woo_carrier_agent_id", "_wc_posti_pickup_id", "_wc_schenker_pickup_id");
+      $pupMeta = array("_woo_carrier_agent_id", "_wc_posti_pickup_id", "_wc_schenker_pickup_id", "_budbee_locker");
+      $shippingMeta = array("_woo_carrier_agent_id", "_wc_posti_pickup_id", "_wc_schenker_pickup_id", "_budbee_locker");
 	  $shipping = $WC_order->get_items('shipping');
 	  foreach($shipping as $sitem)
 	  {
@@ -877,7 +877,7 @@ class nv_wc_api {
 
       if($tracking_code || $tracking_url) {
         echo '<div>';
-          echo '<h3>'.__('Track Your Shipment', 'ogoship-nettivarasto-api-for-woocommerce').'</h3>';
+          echo '<h3>'.__('Track Your Order', 'ogoship-nettivarasto-api-for-woocommerce').'</h3>';
           echo '<p>'.__('Tracking code', 'ogoship-nettivarasto-api-for-woocommerce').': '.$tracking_code.'</p>';
         if($tracking_url){
           echo '<p>'.__('Tracking link', 'ogoship-nettivarasto-api-for-woocommerce').': ' . '<a href="' . $tracking_url . '">' .$tracking_url.'</a></p>';
@@ -896,7 +896,7 @@ class nv_wc_api {
     $tracking_code = get_post_meta( $order_id, 'nettivarasto_tracking', true );
     if($tracking_code) {
       echo '<div>';
-        echo '<h3>'.__('Track Your Shipment', 'ogoship-nettivarasto-api-for-woocommerce').'</h3>';
+        echo '<h3>'.__('Track Your Order', 'ogoship-nettivarasto-api-for-woocommerce').'</h3>';
         echo '<p>'.__('Tracking code', 'ogoship-nettivarasto-api-for-woocommerce').': '.$tracking_code.'</p>';
       echo '</div>';
     }
