@@ -5,20 +5,20 @@
  * Description: Integrate WooCommerce with OGOship / Nettivarasto (https://ogoship.com).
  * Author: OGOShip
  * Author URI: https://www.ogoship.com
- * Version: 3.6.4
+ * Version: 3.7.0
  * Text Domain: ogoship-nettivarasto-api-for-woocommerce
  * Domain Path: /i18n/languages/
  * WC requires at least: 3.0.0
- * WC tested up to: 4.9.2
+ * WC tested up to: 7.1.1
  *
- * Copyright: (c) 2021 OGOship Oy.
+ * Copyright: (c) 2022 OGOship Oy.
  *
  * License: GNU General Public License v3.0
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  *
  * @package   WC-OGOship
  * @author    OGOShip
- * @copyright Copyright (c) 2021, OGOship Oy
+ * @copyright Copyright (c) 2022, OGOship Oy
  * @license   http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
@@ -737,7 +737,7 @@ class nv_wc_api {
     $this->error = '';
   }
 
-  function add_order_meta_box_actions($order) {
+  function add_order_meta_box_actions($actions) {
     $actions['nv_send_order_to_nettivarasto'] = __( 'Send Order to OGOship', 'ogoship-nettivarasto-api-for-woocommerce' );
     return $actions;
   }
