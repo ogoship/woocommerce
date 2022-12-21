@@ -413,6 +413,23 @@ class NettivarastoAPI_Order extends NettivarastoAPI_Object
     $this->setAttribute("OrderLine[$index]::UnitPrice", $value);
   }
 
+    /**
+   * Get price of products on order line (VAT included).
+   */
+  function getOrderLinePriceWithVAT($index)
+  {
+    return $this->getAttribute("OrderLines::OrderLine[$index]::UnitPriceWithVat");
+  }
+
+  /**
+   * Set Price of products on order line (VAT included).
+   */
+  function setOrderLinePriceWithVat($index, $value)
+  {
+    $this->setAttribute("OrderLine[$index]::UnitPriceWithVat", $value);
+  }
+
+
   function getOrderLines()
   {
     return $this->getAttribute('OrderLines');

@@ -451,7 +451,8 @@ class nv_wc_api {
         if(!( get_post_meta($id, '_nettivarasto_no_export', true) ) == 'yes'){	  
 			  $order->setOrderLineCode( $index, ($product->get_sku()) );
 			  $order->setOrderLineQuantity( $index, ($item['qty']));
-			  $order->setOrderLinePrice( $index, $product->get_price());
+			  $order->setOrderLinePrice( $index, $product->get_price_excluding_tax());
+              $order->setOrderLinePriceWithVat($index, $product->get_price_including_tax());
 			  $index++;
 		  }
 	   	 
