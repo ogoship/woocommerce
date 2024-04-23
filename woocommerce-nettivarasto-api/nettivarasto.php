@@ -70,6 +70,7 @@ class nv_wc_api {
 
         add_action( 'init', array( &$this, 'init_nettivarasto' ) );
         add_action('wp_loaded', array( &$this, 'after_wp_load') );
+        add_action( 'before_woocommerce_init', array( $this, 'declare_compatibility' ) );
 
         add_action('get_latest_changes_hook', array( &$this, 'get_latest_changes') );
 
@@ -903,6 +904,15 @@ class nv_wc_api {
         echo '<h3>'.__('Track Your Order', 'ogoship-nettivarasto-api-for-woocommerce').'</h3>';
         echo '<p>'.__('Tracking code', 'ogoship-nettivarasto-api-for-woocommerce').': '.$tracking_code.'</p>';
       echo '</div>';
+    }
+  }
+  
+  /**
+  * Declare HPOS compatibility.
+  */
+  function declare_compatibility() {
+    if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+      \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__ );
     }
   }
 }
