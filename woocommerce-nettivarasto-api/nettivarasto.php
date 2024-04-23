@@ -474,8 +474,8 @@ class nv_wc_api {
       $order->setCustomerAddress2($WC_order->get_shipping_address_2());
       $order->setCustomerCity($WC_order->get_shipping_city());
       $order->setCustomerCountry($WC_order->get_shipping_country());
-	  $order->setCustomerEmail( $WC_order->get_meta( '_billing_email' ) );
-	  $order->setCustomerPhone( $WC_order->get_meta( '_billing_phone' ) );
+      $order->setCustomerEmail( $WC_order->get_meta( '_billing_email' ) );
+      $order->setCustomerPhone( $WC_order->get_meta( '_billing_phone' ) );
       $order->setCustomerZip($WC_order->get_shipping_postcode());
       $order->setComments($WC_order->get_customer_note());
 
@@ -784,11 +784,11 @@ class nv_wc_api {
                     case  'SHIPPED': 
 						if(!$WC_order->has_status('completed'))
 						{
-                            $WC_order->update_meta_data( 'nettivarasto_tracking', $latestOrder->getTrackingNumber() );
+							$WC_order->update_meta_data( 'nettivarasto_tracking', $latestOrder->getTrackingNumber() );
 							$WC_order->add_order_note(__('OGOship change of status to SHIPPED.', 'ogoship-nettivarasto-api-for-woocommerce'), 0);
 							$WC_order->add_order_note(__('Tracking code', 'ogoship-nettivarasto-api-for-woocommerce').': '.$latestOrder->getTrackingNumber(), 0);
 							$WC_order->update_status('completed');
-                            $WC_order->save();
+							$WC_order->save();
 						}
                         break;
                     case  'CANCELLED':
@@ -860,18 +860,18 @@ class nv_wc_api {
   public function email_tracking_code( $order, $sent_to_admin, $plain_text ) {
     if ( $plain_text ) {
       //Do this if we have a plain email
-	  $tracking_code = $order->get_meta( 'ogoship_tracking_url' )
-	    ? $order->get_meta( 'ogoship_tracking_url' )
-	    : $order->get_meta( 'nettivarasto_tracking' );
+      $tracking_code = $order->get_meta( 'ogoship_tracking_url' )
+        ? $order->get_meta( 'ogoship_tracking_url' )
+        : $order->get_meta( 'nettivarasto_tracking' );
 
       if($tracking_code) {
         echo "\n".__('Tracking code', 'ogoship-nettivarasto-api-for-woocommerce').': '.$tracking_code."\n";
       }
     } else {
       //Do this if we have a normal email
-	  $tracking_code = $order->get_meta( 'ogoship_tracking' )
-          ? $order->get_meta( 'ogoship_tracking' )
-          : $order->get_meta( 'nettivarasto_tracking' );
+      $tracking_code = $order->get_meta( 'ogoship_tracking' )
+        ? $order->get_meta( 'ogoship_tracking' )
+        : $order->get_meta( 'nettivarasto_tracking' );
 
       $tracking_url = $order->get_meta( 'ogoship_tracking_url' );
 
@@ -893,12 +893,12 @@ class nv_wc_api {
   * @since 1.0.4
   */
   public function view_order_tracking_code( $order_id ) {
-	$order = wc_get_order( $order_id );
+    $order = wc_get_order( $order_id );
 
-	if ( ! $order ) {
-	  return;
-	}
-    
+    if ( ! $order ) {
+      return;
+    }
+
     if( $tracking_code = $order->get_meta( 'nettivarasto_tracking' ) ) {
       echo '<div>';
         echo '<h3>'.__('Track Your Order', 'ogoship-nettivarasto-api-for-woocommerce').'</h3>';
