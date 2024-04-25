@@ -70,6 +70,7 @@ class nv_wc_api {
 
         add_action( 'init', array( &$this, 'init_nettivarasto' ) );
         add_action('wp_loaded', array( &$this, 'after_wp_load') );
+        add_action( 'before_woocommerce_init', array( $this, 'declare_compatibility' ) );
 
         add_action('get_latest_changes_hook', array( &$this, 'get_latest_changes') );
 
@@ -473,8 +474,8 @@ class nv_wc_api {
       $order->setCustomerAddress2($WC_order->get_shipping_address_2());
       $order->setCustomerCity($WC_order->get_shipping_city());
       $order->setCustomerCountry($WC_order->get_shipping_country());
-      $order->setCustomerEmail( get_post_meta($order_id, '_billing_email', true) );
-      $order->setCustomerPhone( get_post_meta($order_id, '_billing_phone', true) );
+      $order->setCustomerEmail( $WC_order->get_meta( '_billing_email' ) );
+      $order->setCustomerPhone( $WC_order->get_meta( '_billing_phone' ) );
       $order->setCustomerZip($WC_order->get_shipping_postcode());
       $order->setComments($WC_order->get_customer_note());
 
@@ -499,7 +500,7 @@ class nv_wc_api {
 
       foreach($pupMeta as $metafield)
       {
-        $pupcode = get_post_meta($order_id, $metafield, true);
+        $pupcode = $WC_order->get_meta( $metafield );
         if(trim($pupcode) != "") {
             $order->setPickUpPointCode(trim($pupcode));
             break;
@@ -783,10 +784,11 @@ class nv_wc_api {
                     case  'SHIPPED': 
 						if(!$WC_order->has_status('completed'))
 						{
-							update_post_meta( $order_id, 'nettivarasto_tracking', $latestOrder->getTrackingNumber() );
+							$WC_order->update_meta_data( 'nettivarasto_tracking', $latestOrder->getTrackingNumber() );
 							$WC_order->add_order_note(__('OGOship change of status to SHIPPED.', 'ogoship-nettivarasto-api-for-woocommerce'), 0);
 							$WC_order->add_order_note(__('Tracking code', 'ogoship-nettivarasto-api-for-woocommerce').': '.$latestOrder->getTrackingNumber(), 0);
 							$WC_order->update_status('completed');
+							$WC_order->save();
 						}
                         break;
                     case  'CANCELLED':
@@ -858,23 +860,20 @@ class nv_wc_api {
   public function email_tracking_code( $order, $sent_to_admin, $plain_text ) {
     if ( $plain_text ) {
       //Do this if we have a plain email
-      $tracking_code = get_post_meta( $order->get_id(), 'nettivarasto_tracking', true );
-      if(get_post_meta( $order->get_id(), 'ogoship_tracking_url', true )){
-        $tracking_code = get_post_meta( $order->get_id(), 'ogoship_tracking_url', true );
-      }
+      $tracking_code = $order->get_meta( 'ogoship_tracking_url' )
+        ? $order->get_meta( 'ogoship_tracking_url' )
+        : $order->get_meta( 'nettivarasto_tracking' );
+
       if($tracking_code) {
         echo "\n".__('Tracking code', 'ogoship-nettivarasto-api-for-woocommerce').': '.$tracking_code."\n";
       }
     } else {
       //Do this if we have a normal email
-      $tracking_code = get_post_meta( $order->get_id(), 'nettivarasto_tracking', true );
-      if(get_post_meta( $order->get_id(), 'ogoship_tracking', true )){
-        $tracking_code = get_post_meta( $order->get_id(), 'ogoship_tracking', true );
-      }
-      $tracking_url = "";
-      if(get_post_meta( $order->get_id(), 'ogoship_tracking_url', true )){
-        $tracking_url = get_post_meta( $order->get_id(), 'ogoship_tracking_url', true );
-      }
+      $tracking_code = $order->get_meta( 'ogoship_tracking' )
+        ? $order->get_meta( 'ogoship_tracking' )
+        : $order->get_meta( 'nettivarasto_tracking' );
+
+      $tracking_url = $order->get_meta( 'ogoship_tracking_url' );
 
       if($tracking_code || $tracking_url) {
         echo '<div>';
@@ -894,12 +893,26 @@ class nv_wc_api {
   * @since 1.0.4
   */
   public function view_order_tracking_code( $order_id ) {
-    $tracking_code = get_post_meta( $order_id, 'nettivarasto_tracking', true );
-    if($tracking_code) {
+    $order = wc_get_order( $order_id );
+
+    if ( ! $order ) {
+      return;
+    }
+
+    if( $tracking_code = $order->get_meta( 'nettivarasto_tracking' ) ) {
       echo '<div>';
         echo '<h3>'.__('Track Your Order', 'ogoship-nettivarasto-api-for-woocommerce').'</h3>';
         echo '<p>'.__('Tracking code', 'ogoship-nettivarasto-api-for-woocommerce').': '.$tracking_code.'</p>';
       echo '</div>';
+    }
+  }
+  
+  /**
+  * Declare HPOS compatibility.
+  */
+  function declare_compatibility() {
+    if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+      \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__ );
     }
   }
 }
