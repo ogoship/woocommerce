@@ -5,7 +5,7 @@
  * Description: Integrate WooCommerce with OGOship / Nettivarasto (https://ogoship.com).
  * Author: OGOShip
  * Author URI: https://www.ogoship.com
- * Version: 3.7.0
+ * Version: 3.7.1
  * Text Domain: ogoship-nettivarasto-api-for-woocommerce
  * Domain Path: /i18n/languages/
  * WC requires at least: 3.0.0
@@ -864,7 +864,9 @@ class nv_wc_api {
         ? $order->get_meta( 'ogoship_tracking_url' )
         : $order->get_meta( 'nettivarasto_tracking' );
 
-      if($tracking_code) {
+      if($tracking_url) {
+        echo '\n'.__('Tracking link', 'ogoship-nettivarasto-api-for-woocommerce').': ' . $tracking_url . "\n";  
+      } else {
         echo "\n".__('Tracking code', 'ogoship-nettivarasto-api-for-woocommerce').': '.$tracking_code."\n";
       }
     } else {
@@ -878,9 +880,10 @@ class nv_wc_api {
       if($tracking_code || $tracking_url) {
         echo '<div>';
           echo '<h3>'.__('Track Your Order', 'ogoship-nettivarasto-api-for-woocommerce').'</h3>';
-          echo '<p>'.__('Tracking code', 'ogoship-nettivarasto-api-for-woocommerce').': '.$tracking_code.'</p>';
         if($tracking_url){
           echo '<p>'.__('Tracking link', 'ogoship-nettivarasto-api-for-woocommerce').': ' . '<a href="' . $tracking_url . '">' .$tracking_url.'</a></p>';
+        } else {
+          echo '<p>'.__('Tracking code', 'ogoship-nettivarasto-api-for-woocommerce').': '.$tracking_code.'</p>';
         }
         echo '</div>';
       }
