@@ -5,7 +5,7 @@
  * Description: Integrate WooCommerce with OGOship / Nettivarasto (https://ogoship.com).
  * Author: OGOShip
  * Author URI: https://www.ogoship.com
- * Version: 3.7.1
+ * Version: 3.8.0
  * Text Domain: ogoship-nettivarasto-api-for-woocommerce
  * Domain Path: /i18n/languages/
  * WC requires at least: 3.0.0
@@ -35,6 +35,7 @@ class nv_wc_api {
     private $notice;
     private $error;
     private $version;
+    private $denyExport = false;
 
     function __construct() {
 
@@ -125,7 +126,7 @@ class nv_wc_api {
         if($order_id != '')
         {
             $payment_hook_enable = get_option('woocommerce_nv_payment_hook_enable');
-            if(isset($payment_hook_enable) && $processing_hook_enable == 'yes')
+            if(isset($payment_hook_enable) && $payment_hook_enable == 'yes')
             {
                 $this->save_order_to_nettivarasto($order_id);
             }
@@ -167,13 +168,10 @@ class nv_wc_api {
     }
 
     function after_wp_load() {   
-      if( @$_GET['send_to_nv'] && is_admin() ) {
-         do_action('woocommerce_payment_complete', $_GET['post'] );
-      }
-      if( @$_GET['export_all'] && is_admin()) {
+      if( isset($_GET['ogoship_export_all']) && is_admin()) {
          $this->update_all_products();
       }
-      if( @$_GET['get_latest_changes'] && is_admin()) {
+      if( isset($_GET['ogoship_get_latest_changes']) && is_admin()) {
           $this->get_latest_changes();
       }
       load_plugin_textdomain('ogoship-nettivarasto-api-for-woocommerce', false, dirname( plugin_basename( __FILE__ ) ) . '/i18n/languages');
@@ -201,23 +199,27 @@ class nv_wc_api {
         'name'    => __( 'OGOship Plugin General Settings', 'ogoship-nettivarasto-api-for-woocommerce' ),
         'type'    => 'title',
         'desc'    => '<p>'.__('The following are general settings for OGOship plugin.', 'ogoship-nettivarasto-api-for-woocommerce').'</p><h4>'
-		.__('Export', 'ogoship-nettivarasto-api-for-woocommerce').'</h4><p><a href="?page=wc-settings&export_all=true">'
+		.__('Export', 'ogoship-nettivarasto-api-for-woocommerce').'</h4><p><a href="?page=wc-settings&ogoship_export_all=true">'
 		.__('Click here', 'ogoship-nettivarasto-api-for-woocommerce').'</a> '.__('to export all products to OGOship', 'ogoship-nettivarasto-api-for-woocommerce')
 		.'.</p><h4>'.__('Update Orders and Products', 'ogoship-nettivarasto-api-for-woocommerce')
-		.'</h4><p><a href="?page=wc-settings&get_latest_changes=true">'.__('Click here', 'ogoship-nettivarasto-api-for-woocommerce')
+		.'</h4><p><a href="?page=wc-settings&ogoship_get_latest_changes=true">'.__('Click here', 'ogoship-nettivarasto-api-for-woocommerce')
 		.'</a> '.__('to update product and order info from OGOship', 'ogoship-nettivarasto-api-for-woocommerce').'.</p>',
         'id'    => 'nettivarasto_general_settings'
     );
 	$timestampstr = __('never', 'ogoship-nettivarasto-api-for-woocommerce');
 	if(get_option('nettivarasto_latest_changes_timestamp'))
 	{
+        $ts = (int)get_option('nettivarasto_latest_changes_timestamp');
+        if($ts > 0)
+        {
 	    $tsdate = new DateTime();
-	    $tsdate->setTimestamp(get_option('nettivarasto_latest_changes_timestamp'));
+	        $tsdate->setTimestamp($ts);
 	    try {
 		$tsdate->setTimezone(new DateTimeZone(get_option('timezone_string', "UTC")));
 	    } catch(Exception $e) {}
 
 	    $timestampstr = $tsdate->format('Y-m-d H:i:s');
+        }
 	}
     $updated_settings[] = array(
         'type'    => 'title',
@@ -353,14 +355,6 @@ class nv_wc_api {
         )
     );
 	
-	if(empty($product_object->get_sku( 'edit' )) && $product_object->is_type('simple')){ ?>
-		<script type="text/javascript">
-		jQuery(document).ready(function(){
-			jQuery('#_nettivarasto_no_export').prop('checked', true);
-		})
-		</script>
-	<?php } ?>
-	<?php
 	
     woocommerce_wp_checkbox( 
         array( 
@@ -379,12 +373,12 @@ class nv_wc_api {
   * @since 1.1.1
   */
   function save_product_meta($post_id) {
-    $nettivarasto_supplier_name = $_POST['_nettivarasto_supplier_name'];
+    $nettivarasto_supplier_name = $_POST['_nettivarasto_supplier_name'] ?? "";
     if( !empty( $nettivarasto_supplier_name ) ){
         update_post_meta( $post_id, '_nettivarasto_supplier_name', esc_attr( $nettivarasto_supplier_name ) );
     }
 
-    $nettivarasto_supplier_code = $_POST['_nettivarasto_supplier_code'];
+    $nettivarasto_supplier_code = $_POST['_nettivarasto_supplier_code'] ?? "";
     if( !empty( $nettivarasto_supplier_code ) ){
         update_post_meta( $post_id, '_nettivarasto_supplier_code', esc_attr( $nettivarasto_supplier_code ) );
     }
@@ -392,27 +386,27 @@ class nv_wc_api {
     if( !empty( $nettivarasto_group ) ){
         update_post_meta( $post_id, '_nettivarasto_group', esc_attr( $nettivarasto_group ) );
     }
-    $nettivarasto_purchase_price = $_POST['_nettivarasto_purchase_price'];
+    $nettivarasto_purchase_price = $_POST['_nettivarasto_purchase_price'] ?? "";
     if( !empty( $nettivarasto_purchase_price ) ){
         update_post_meta( $post_id, '_nettivarasto_purchase_price', esc_attr( $nettivarasto_purchase_price ) );
     }
-    $nettivarasto_eancode = $_POST['_nettivarasto_eancode'];
+    $nettivarasto_eancode = $_POST['_nettivarasto_eancode'] ?? "";
     if( !empty( $nettivarasto_eancode ) ){
         update_post_meta( $post_id, '_nettivarasto_eancode', esc_attr( $nettivarasto_eancode ) );
     }
-    $nettivarasto_customsdescription = $_POST['_nettivarasto_customsdescription'];
+    $nettivarasto_customsdescription = $_POST['_nettivarasto_customsdescription'] ?? "";
     if( !empty( $nettivarasto_customsdescription ) ){
         update_post_meta( $post_id, '_nettivarasto_customsdescription', esc_attr( $nettivarasto_customsdescription ) );
     }
-    $nettivarasto_countryoforigin = $_POST['_nettivarasto_countryoforigin'];
+    $nettivarasto_countryoforigin = $_POST['_nettivarasto_countryoforigin'] ?? "";
     if( !empty( $nettivarasto_countryoforigin ) ){
         update_post_meta( $post_id, '_nettivarasto_countryoforigin', esc_attr( $nettivarasto_countryoforigin ) );
     }
-    $nettivarasto_hscode = $_POST['_nettivarasto_hscode'];
+    $nettivarasto_hscode = $_POST['_nettivarasto_hscode'] ?? "";
     if( !empty( $nettivarasto_hscode ) ){
         update_post_meta( $post_id, '_nettivarasto_hscode', esc_attr( $nettivarasto_hscode ) );
     }
-    $nettivarasto_no_export = $_POST['_nettivarasto_no_export']; 
+    $nettivarasto_no_export = $_POST['_nettivarasto_no_export'] ?? "no"; 
     update_post_meta( $post_id, '_nettivarasto_no_export', esc_attr( $nettivarasto_no_export ) );
   }
 
@@ -516,8 +510,7 @@ class nv_wc_api {
       else {
         if(strstr($this->api->GetLastError(), "Trying to add new order but order with same reference") == FALSE )
         { 
-          $WC_order->add_order_note(__('Error', 'ogoship-nettivarasto-api-for-woocommerce').': '.$this->api->getLastError().' <a href="?post='
-			. $WC_order->get_id().'&action=edit&send_to_nv=true">'.__('Send order again.', 'ogoship-nettivarasto-api-for-woocommerce').'</a>', 0);
+          $WC_order->add_order_note(__('Error', 'ogoship-nettivarasto-api-for-woocommerce').': '.$this->api->getLastError(), 0);
           wp_mail( get_option( 'admin_email' ), 'Error - OGOship API', $this->api->getLastError() ); 
         }
       return; 
