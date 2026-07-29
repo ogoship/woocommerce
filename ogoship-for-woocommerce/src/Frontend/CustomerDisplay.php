@@ -90,40 +90,47 @@ final class CustomerDisplay {
 		$url    = $tracking->url();
 		$status = $tracking->status();
 
+		/*
+		 * Plain headings and paragraphs, deliberately. An earlier version reused
+		 * WooCommerce's `woocommerce-order-overview` class to inherit theme
+		 * styling, but that class is styled for the order number / date / total
+		 * strip: it lays its items out as uppercase columns, which left the
+		 * tracking link sitting in a column with no label. Ordinary block
+		 * elements inherit the theme's typography and read correctly everywhere
+		 * without the plugin shipping any front-end CSS.
+		 */
 		echo '<section class="ogoship-tracking woocommerce-order-tracking">';
 
 		printf(
-			'<h2 class="woocommerce-column__title">%s</h2>',
+			'<h2 class="woocommerce-column__title ogoship-tracking__title">%s</h2>',
 			esc_html__( 'Track your delivery', 'ogoship-for-woocommerce' )
 		);
 
-		echo '<ul class="ogoship-tracking__list woocommerce-order-overview">';
-
 		if ( '' !== $number ) {
 			printf(
-				'<li class="ogoship-tracking__number">%1$s <strong>%2$s</strong></li>',
+				'<p class="ogoship-tracking__number">%1$s <strong>%2$s</strong></p>',
 				esc_html__( 'Tracking number:', 'ogoship-for-woocommerce' ),
 				esc_html( $number )
 			);
 		}
 
-		if ( '' !== $url ) {
-			printf(
-				'<li class="ogoship-tracking__link"><a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a></li>',
-				esc_url( $url ),
-				esc_html__( 'Follow your shipment', 'ogoship-for-woocommerce' )
-			);
-		}
-
 		if ( '' !== $status ) {
 			printf(
-				'<li class="ogoship-tracking__status">%1$s <strong>%2$s</strong></li>',
+				'<p class="ogoship-tracking__status">%1$s <strong>%2$s</strong></p>',
 				esc_html__( 'Status:', 'ogoship-for-woocommerce' ),
 				esc_html( $status )
 			);
 		}
 
-		echo '</ul>';
+		// The call to action goes last, after the facts it refers to.
+		if ( '' !== $url ) {
+			printf(
+				'<p class="ogoship-tracking__link"><a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a></p>',
+				esc_url( $url ),
+				esc_html__( 'Follow your shipment', 'ogoship-for-woocommerce' )
+			);
+		}
+
 		echo '</section>';
 	}
 

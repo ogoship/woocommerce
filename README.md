@@ -104,6 +104,25 @@ tracking display testable without OGOship in the loop.
 | order `completed` | the one to point `bin/seed-tracking.sh` at |
 | order `legacy-tracking` | carries only `nettivarasto_tracking`, proving the 3.x fallback still renders |
 
+## Release assets
+
+The wordpress.org listing lives in two places: `ogoship-for-woocommerce/readme.txt`
+is the page body, and `.wordpress-org/` holds everything that goes into the
+plugin's SVN `assets/` directory. `.wordpress-org/LISTING.md` is the submission
+pack — form fields, review notes, and the plan for deprecating the 3.x listing.
+
+Regenerate the screenshots after any UI change:
+
+```bash
+bin/wp eval-file /seed/screenshot-state.php   # plausible demo data
+node bin/screenshots.mjs                      # -> .wordpress-org/screenshot-N.png
+```
+
+`screenshot-N.png` pairs with the Nth line of the readme's `== Screenshots ==`
+section, so keep the two in step.
+
+Build the distributable zip with `bin/build.sh`.
+
 ## Quality checks
 
 ```bash

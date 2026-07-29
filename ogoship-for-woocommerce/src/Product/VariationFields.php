@@ -56,6 +56,8 @@ final class VariationFields {
 			esc_html__( 'OGOship', 'ogoship-for-woocommerce' )
 		);
 
+		$column = 0;
+
 		foreach ( Repository::variation_keys() as $key ) {
 			$field = $fields[ $key ];
 
@@ -72,6 +74,13 @@ final class VariationFields {
 				? sprintf( __( 'Inherited: %s', 'ogoship-for-woocommerce' ), $inherited )
 				: __( 'Not set', 'ogoship-for-woocommerce' );
 
+			// Alternate first/last so the fields pair into two columns, the way
+			// WooCommerce lays out its own variation fields. Using form-row-first
+			// throughout stacks them in one narrow column and makes the panel
+			// twice as tall as it needs to be.
+			$wrapper_class = 0 === $column % 2 ? 'form-row form-row-first' : 'form-row form-row-last';
+			++$column;
+
 			woocommerce_wp_text_input(
 				array(
 					'id'            => "ogoship_variation{$key}[{$loop}]",
@@ -81,10 +90,14 @@ final class VariationFields {
 					'placeholder'   => $placeholder,
 					'desc_tip'      => true,
 					'description'   => $field['description'],
-					'wrapper_class' => 'form-row form-row-first',
+					'wrapper_class' => $wrapper_class,
 				)
 			);
 		}//end foreach
+
+		// Clear the float so WooCommerce's following fields (weight, dimensions)
+		// do not wrap alongside the last OGOship row.
+		echo '<div class="clear"></div>';
 
 		echo '</div>';
 	}
