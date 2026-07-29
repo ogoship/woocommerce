@@ -122,6 +122,12 @@ wp option update woocommerce_store_pages_only no >/dev/null
 wp option patch update woocommerce_task_list_hidden_lists 0 setup >/dev/null 2>&1 || true
 wp option update woocommerce_admin_notices '[]' --format=json >/dev/null
 
+# WooCommerce writes an email's settings option only once the merchant saves it
+# in wp-admin, so on a fresh store it does not exist and the e2e suite cannot
+# switch the completed-order email between HTML and plain text. Seed it.
+wp option update woocommerce_customer_completed_order_settings \
+	'{"enabled":"yes","email_type":"html"}' --format=json >/dev/null
+
 # Cash on delivery gives us a checkout that completes without a real gateway.
 wp option patch update woocommerce_cod_settings enabled yes >/dev/null 2>&1 \
 	|| wp option update woocommerce_cod_settings '{"enabled":"yes","title":"Cash on delivery"}' --format=json >/dev/null
