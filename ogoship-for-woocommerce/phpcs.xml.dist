@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<ruleset name="OGOship for WooCommerce">
+	<description>WordPress and WooCommerce coding standards.</description>
+
+	<file>.</file>
+	<exclude-pattern>/vendor/*</exclude-pattern>
+	<exclude-pattern>/node_modules/*</exclude-pattern>
+
+	<arg name="extensions" value="php"/>
+	<arg name="basepath" value="."/>
+	<arg name="colors"/>
+	<arg name="parallel" value="8"/>
+	<arg value="ps"/>
+
+	<!--
+		WooCommerce-Core pulls in WordPress-Core/Docs/Extra plus WooCommerce's
+		own sniffs. The escaping and nonce rules it enforces are the whole
+		reason this file exists: the plugin this replaces shipped unescaped
+		remote data straight into href attributes.
+	-->
+	<rule ref="WooCommerce-Core"/>
+
+	<config name="minimum_supported_wp_version" value="6.4"/>
+	<config name="testVersion" value="8.1-"/>
+	<rule ref="PHPCompatibilityWP"/>
+
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array" value="ogoship-for-woocommerce"/>
+		</properties>
+	</rule>
+
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array" value="ogoship,OGOship\WooCommerce"/>
+		</properties>
+	</rule>
+
+	<!--
+		PSR-4 autoloading requires StudlyCaps class filenames, which is the
+		opposite of WordPress's class-foo.php convention. PSR-4 wins here.
+	-->
+	<rule ref="WordPress.Files.FileName">
+		<exclude-pattern>/src/*</exclude-pattern>
+	</rule>
+</ruleset>

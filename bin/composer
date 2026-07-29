@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+#
+# Run Composer against the plugin directory without needing PHP on the host.
+#
+#   bin/composer install
+#   bin/composer lint
+#
+# Composer is only needed for the dev toolchain (phpcs / phpstan / phpunit) --
+# the plugin has no runtime dependencies and autoloads itself.
+#
+set -euo pipefail
+
+PLUGIN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../ogoship-for-woocommerce" && pwd)"
+
+exec docker run --rm --interactive --tty \
+	--volume "$PLUGIN_DIR":/app \
+	--volume "${COMPOSER_CACHE_DIR:-$HOME/.cache/composer}":/tmp/composer-cache \
+	--env COMPOSER_CACHE_DIR=/tmp/composer-cache \
+	--user "$(id -u):$(id -g)" \
+	composer:2 "$@"
