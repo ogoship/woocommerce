@@ -1,5 +1,5 @@
 # Copyright (C) 2026 OGOship
-# This file is distributed under the GPL v3 or later.
+# This file is distributed under the MIT License.
 msgid ""
 msgstr ""
 "Project-Id-Version: OGOship for WooCommerce 1.0.0\n"

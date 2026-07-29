@@ -124,10 +124,14 @@ final class VariationFields {
 		foreach ( Repository::variation_keys() as $key ) {
 			$input = "ogoship_variation{$key}";
 
-			// wc_clean() walks arrays recursively; Repository::set then applies
-			// the field's own type-aware sanitization on top.
+			// The field arrives as an array keyed by the variation loop index, so
+			// it has to be sanitized recursively. map_deep() with
+			// sanitize_text_field() is what wc_clean() does internally, but
+			// Plugin Check's ruleset does not know WooCommerce's helper and
+			// reports the input as unsanitized. Repository::set then applies the
+			// field's own type-aware sanitization on top.
 			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- verified by WooCommerce before this hook fires.
-			$values = isset( $_POST[ $input ] ) ? wc_clean( wp_unslash( $_POST[ $input ] ) ) : array();
+			$values = isset( $_POST[ $input ] ) ? map_deep( wp_unslash( $_POST[ $input ] ), 'sanitize_text_field' ) : array();
 
 			if ( ! is_array( $values ) || ! isset( $values[ $loop ] ) ) {
 				continue;

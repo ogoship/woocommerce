@@ -1,8 +1,8 @@
 === OGOship for WooCommerce ===
 Contributors: ogoship
 Tags: ogoship, fulfillment, 3PL, logistics, shipment tracking
-Requires at least: 6.4
-Tested up to: 6.9
+Requires at least: 6.5
+Tested up to: 7.0
 Requires PHP: 8.1
 Stable tag: 1.0.0
 License: MIT
