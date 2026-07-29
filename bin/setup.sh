@@ -112,6 +112,13 @@ wp option update woocommerce_currency "${WC_CURRENCY:-EUR}"  >/dev/null
 wp option update woocommerce_calc_taxes "yes"                >/dev/null
 # Silence the setup wizard so wp-admin lands where the e2e suite expects.
 wp option update woocommerce_onboarding_profile '{"completed":true,"skipped":true}' --format=json >/dev/null
+
+# Take the store out of "Coming soon" mode (WooCommerce's Launch Your Store).
+# New stores default to it, and it serves a placeholder page to anyone who is
+# not logged in -- including the order-received page, which is exactly what the
+# customer-facing tracking tests fetch anonymously.
+wp option update woocommerce_coming_soon no >/dev/null
+wp option update woocommerce_store_pages_only no >/dev/null
 wp option patch update woocommerce_task_list_hidden_lists 0 setup >/dev/null 2>&1 || true
 wp option update woocommerce_admin_notices '[]' --format=json >/dev/null
 

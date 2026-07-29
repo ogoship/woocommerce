@@ -109,7 +109,7 @@ final class StatusPage {
 				__( 'Requests recorded', 'ogoship-for-woocommerce' ),
 				esc_html( (string) count( $entries ) )
 			);
-		}
+		}//end if
 
 		echo '</tbody></table>';
 	}
@@ -152,7 +152,7 @@ final class StatusPage {
 					$date ? ' &mdash; ' . esc_html( $date->date_i18n( get_option( 'date_format' ) ) ) : ''
 				)
 			);
-		}
+		}//end if
 
 		echo '</tbody></table>';
 	}

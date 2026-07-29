@@ -26,13 +26,29 @@
 
 	<rule ref="WordPress.WP.I18n">
 		<properties>
-			<property name="text_domain" type="array" value="ogoship-for-woocommerce"/>
+			<property name="text_domain" type="array">
+				<element value="ogoship-for-woocommerce"/>
+			</property>
 		</properties>
 	</rule>
 
 	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
 		<properties>
-			<property name="prefixes" type="array" value="ogoship,OGOship\WooCommerce"/>
+			<property name="prefixes" type="array">
+				<element value="ogoship"/>
+				<element value="OGOship\WooCommerce"/>
+			</property>
+		</properties>
+	</rule>
+
+	<!-- Capabilities registered by WooCommerce, which WPCS does not know about. -->
+	<rule ref="WordPress.WP.Capabilities">
+		<properties>
+			<property name="custom_capabilities" type="array">
+				<element value="edit_product"/>
+				<element value="manage_woocommerce"/>
+				<element value="view_woocommerce_reports"/>
+			</property>
 		</properties>
 	</rule>
 
@@ -42,5 +58,37 @@
 	-->
 	<rule ref="WordPress.Files.FileName">
 		<exclude-pattern>/src/*</exclude-pattern>
+		<exclude-pattern>/tests/*</exclude-pattern>
+	</rule>
+
+	<!--
+		Tests follow PHPUnit conventions, not WordPress ones: test methods are
+		self-describing and do not carry doc blocks, data providers use
+		unaligned arrays, and the suite deliberately calls the raw PHP
+		functions it stubs. Correctness rules (escaping, nonces, sanitization)
+		still apply; only the documentation and formatting sniffs are off.
+	-->
+	<rule ref="Squiz.Commenting">
+		<exclude-pattern>/tests/*</exclude-pattern>
+	</rule>
+	<rule ref="Generic.Commenting">
+		<exclude-pattern>/tests/*</exclude-pattern>
+	</rule>
+	<rule ref="WordPress.Arrays.MultipleStatementAlignment">
+		<exclude-pattern>/tests/*</exclude-pattern>
+	</rule>
+	<rule ref="WordPress.PHP.DevelopmentFunctions">
+		<exclude-pattern>/tests/*</exclude-pattern>
+	</rule>
+	<rule ref="WordPress.WP.AlternativeFunctions">
+		<exclude-pattern>/tests/*</exclude-pattern>
+	</rule>
+	<!--
+		The bootstrap deliberately declares ABSPATH and bare WC_Product /
+		WC_Order stubs so Mockery can mock them by name without loading
+		WordPress. Prefixing those would defeat the point.
+	-->
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<exclude-pattern>/tests/*</exclude-pattern>
 	</rule>
 </ruleset>

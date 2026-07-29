@@ -66,8 +66,8 @@ final class OrderColumn {
 	 * The second argument is a WC_Order under HPOS and a post ID on the legacy
 	 * screen; Tracking::for() accepts either.
 	 *
-	 * @param string           $column Column key being rendered.
-	 * @param \WC_Order|int    $order  Order object or post ID.
+	 * @param string        $column Column key being rendered.
+	 * @param \WC_Order|int $order  Order object or post ID.
 	 */
 	public function render_column( string $column, $order ): void {
 		if ( self::COLUMN !== $column ) {

@@ -41,6 +41,8 @@ final class Tracking {
 
 	/**
 	 * The order this instance describes.
+	 *
+	 * @var \WC_Order
 	 */
 	private \WC_Order $order;
 

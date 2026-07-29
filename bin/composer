@@ -12,7 +12,12 @@ set -euo pipefail
 
 PLUGIN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../ogoship-for-woocommerce" && pwd)"
 
-exec docker run --rm --interactive --tty \
+# Only allocate a TTY when there is one -- otherwise CI and non-interactive
+# shells fail with "cannot attach stdin to a TTY-enabled container".
+tty_flag=()
+[[ -t 0 && -t 1 ]] && tty_flag=(--tty)
+
+exec docker run --rm --interactive "${tty_flag[@]}" \
 	--volume "$PLUGIN_DIR":/app \
 	--volume "${COMPOSER_CACHE_DIR:-$HOME/.cache/composer}":/tmp/composer-cache \
 	--env COMPOSER_CACHE_DIR=/tmp/composer-cache \

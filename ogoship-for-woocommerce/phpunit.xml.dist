@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<phpunit
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+	bootstrap="tests/bootstrap.php"
+	colors="true"
+	beStrictAboutTestsThatDoNotTestAnything="false"
+	failOnWarning="true"
+	convertDeprecationsToExceptions="true"
+	>
+	<testsuites>
+		<!--
+			Unit tests run with no WordPress at all: Brain Monkey stubs the
+			handful of WP/WC functions the classes under test call. That keeps
+			them fast enough to run on every save.
+		-->
+		<testsuite name="unit">
+			<directory suffix="Test.php">tests/unit</directory>
+		</testsuite>
+	</testsuites>
+
+	<!-- PHPUnit 9 syntax; <source> is 10+. -->
+	<coverage>
+		<include>
+			<directory suffix=".php">src</directory>
+		</include>
+	</coverage>
+</phpunit>

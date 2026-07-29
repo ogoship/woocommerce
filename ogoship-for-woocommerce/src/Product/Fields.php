@@ -98,11 +98,12 @@ final class Fields {
 					'label'       => $field['label'],
 					'description' => $field['description'],
 					'desc_tip'    => true,
-					'type'        => 'price' === $field['sanitize'] ? 'text' : 'text',
+					// wc_input_price gives the price field WooCommerce's own
+					// locale-aware decimal handling.
 					'class'       => 'price' === $field['sanitize'] ? 'short wc_input_price' : 'short',
 				)
 			);
-		}
+		}//end foreach
 		echo '</div>';
 
 		if ( $product->is_type( 'variable' ) ) {

@@ -37,9 +37,9 @@ final class VariationFields {
 	/**
 	 * Render the fields inside a variation's inventory section.
 	 *
-	 * @param int      $loop           Index of the variation in the form.
-	 * @param array    $variation_data Legacy variation data (unused).
-	 * @param \WP_Post $variation      The variation post.
+	 * @param int                  $loop           Index of the variation in the form.
+	 * @param array<string, mixed> $variation_data Legacy variation data (unused).
+	 * @param \WP_Post             $variation      The variation post.
 	 */
 	public function render( int $loop, array $variation_data, \WP_Post $variation ): void {
 		$product = wc_get_product( $variation->ID );
@@ -84,7 +84,7 @@ final class VariationFields {
 					'wrapper_class' => 'form-row form-row-first',
 				)
 			);
-		}
+		}//end foreach
 
 		echo '</div>';
 	}
@@ -111,8 +111,10 @@ final class VariationFields {
 		foreach ( Repository::variation_keys() as $key ) {
 			$input = "ogoship_variation{$key}";
 
+			// wc_clean() walks arrays recursively; Repository::set then applies
+			// the field's own type-aware sanitization on top.
 			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- verified by WooCommerce before this hook fires.
-			$values = isset( $_POST[ $input ] ) ? wp_unslash( $_POST[ $input ] ) : array();
+			$values = isset( $_POST[ $input ] ) ? wc_clean( wp_unslash( $_POST[ $input ] ) ) : array();
 
 			if ( ! is_array( $values ) || ! isset( $values[ $loop ] ) ) {
 				continue;

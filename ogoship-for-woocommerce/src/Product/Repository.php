@@ -197,8 +197,11 @@ final class Repository {
 	public static function sanitize( string $strategy, string $raw ): string {
 		switch ( $strategy ) {
 			case 'price':
-				// Accepts both "18,50" and "18.50"; wc_format_decimal returns
-				// '' for anything that is not a number.
+				// Interpreted with the store's own decimal/thousands
+				// separators, exactly like every other WooCommerce price
+				// field -- so on a default store "18,50" is 1850, not 18.50.
+				// The input carries the wc_input_price class so the admin JS
+				// validates it the same way. Returns '' for a non-number.
 				$decimal = wc_format_decimal( $raw );
 				return '' === $decimal || null === $decimal ? '' : (string) $decimal;
 
@@ -213,7 +216,7 @@ final class Repository {
 			case 'text':
 			default:
 				return (string) wc_clean( $raw );
-		}
+		}//end switch
 	}
 
 	/**
