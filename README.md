@@ -115,4 +115,5 @@ bin/composer test       # PHPUnit unit tests
 
 ## License
 
-GPL v3 or later. See `LICENSE`.
+MIT. See `LICENSE`. (MIT is GPL-compatible, which is what wordpress.org
+requires of hosted plugins.)

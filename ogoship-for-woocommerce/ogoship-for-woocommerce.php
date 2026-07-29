@@ -6,8 +6,8 @@
  * Version:           1.0.0
  * Author:            OGOship
  * Author URI:        https://www.ogoship.com
- * License:           GPL v3 or later
- * License URI:       https://www.gnu.org/licenses/gpl-3.0.html
+ * License:           MIT
+ * License URI:       https://opensource.org/licenses/MIT
  * Text Domain:       ogoship-for-woocommerce
  * Domain Path:       /languages
  * Requires at least: 6.4
@@ -18,10 +18,8 @@
  *
  * @package OGOship\WooCommerce
  *
- * OGOship for WooCommerce is free software: you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your
- * option) any later version.
+ * Released under the MIT License; see the LICENSE file at the repository root.
+ * MIT is GPL-compatible, which is what wordpress.org requires.
  */
 
 declare( strict_types=1 );

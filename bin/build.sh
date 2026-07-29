@@ -48,6 +48,10 @@ rsync -a \
 	--exclude 'phpunit.xml.dist' \
 	"$SRC/" "$target/"
 
+# One licence for the whole repository, copied in at build time so the zip
+# still carries it.
+cp "$ROOT_DIR/LICENSE" "$target/LICENSE"
+
 mkdir -p "$DIST"
 zip_path="$DIST/$SLUG-$version.zip"
 rm -f "$zip_path"

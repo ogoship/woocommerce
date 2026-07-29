@@ -2,7 +2,7 @@
 	"name": "ogoship/ogoship-for-woocommerce",
 	"description": "Companion plugin for the OGOship fulfillment integration: OGOship product fields and customer-facing shipment tracking.",
 	"type": "wordpress-plugin",
-	"license": "GPL-3.0-or-later",
+	"license": "MIT",
 	"require": {
 		"php": ">=8.1"
 	},
