@@ -98,7 +98,7 @@ class nv_wc_api {
 
     function check_latest_changes_hook()
     {
-        if(get_option('woocommerce_nettivarasto_hourly_updates') && get_option('woocommerce_nettivarasto_hourly_updates') != 'no')
+        if(!empty(get_option('woocommerce_nettivarasto_hourly_updates')) && get_option('woocommerce_nettivarasto_hourly_updates') != 'no')
         {
             if(!wp_next_scheduled( 'get_latest_changes_hook' ))
             {
@@ -221,6 +221,10 @@ class nv_wc_api {
 	    $timestampstr = $tsdate->format('Y-m-d H:i:s');
         }
 	}
+    $denyExport = get_option('woocommerce_deny_export_product');
+    $hourlyUpdates = get_option('woocommerce_nettivarasto_hourly_updates');
+    $paymentHook = get_option('woocommerce_nv_payment_hook_enable');
+    $processingHook = get_option('woocommerce_nv_processing_hook_enable');
     $updated_settings[] = array(
         'type'    => 'title',
         'desc'    => __('Latest successful update from OGOship', 'ogoship-nettivarasto-api-for-woocommerce') . ': ' . $timestampstr,
@@ -243,27 +247,27 @@ class nv_wc_api {
     );
 	 $updated_settings[] = array(
       'name'      => __( 'Deny product export', 'ogoship-nettivarasto-api-for-woocommerce' ),
-      'desc_tip'  => __( 'This option will deny the product export to OGOship', 'ogoship-nettivarasto-api-for-woocommerce' ),
+      'desc_tip'  => __( 'This option will deny the product export to OGOship', 'ogoship-nettivarasto-api-for-woocommerce' ) . ':' . $denyExport,
       'id'        => 'woocommerce_deny_export_product',
       'type'      => 'checkbox',
     );
 	$updated_settings[] = array(
       'name'      => __( 'Hourly order status and product stock updates on/off', 'ogoship-nettivarasto-api-for-woocommerce' ),
-      'desc_tip'  => __( 'Check to enable automatic hourly retrieval of latest order status and product stock level changes.', 'ogoship-nettivarasto-api-for-woocommerce' ),
+      'desc_tip'  => __( 'Check to enable automatic hourly retrieval of latest order status and product stock level changes.', 'ogoship-nettivarasto-api-for-woocommerce' ) . ':' . $hourlyUpdates,
       'id'        => 'woocommerce_nettivarasto_hourly_updates',
       'type'      => 'checkbox',
       'default'   => 'no',
     );
 	$updated_settings[] = array(
         'name'      => __( 'Automatically send orders to OGOship on completed payment', 'ogoship-nettivarasto-api-for-woocommerce' ),
-        'desc_tip'  => __( 'Orders are automatically sent to OGOship when WooCommerce detects payment to be complete. Does not work with all payment plugins.', 'ogoship-nettivarasto-api-for-woocommerce' ),
+        'desc_tip'  => __( 'Orders are automatically sent to OGOship when WooCommerce detects payment to be complete. Does not work with all payment plugins.', 'ogoship-nettivarasto-api-for-woocommerce' ) . ':' . $paymentHook,
         'id'        => 'woocommerce_nv_payment_hook_enable',
         'type'      => 'checkbox',
-        'default'   => 'yes',
+        'default'   => 'no',
       );
       $updated_settings[] = array(
         'name'      => __( 'Automatically send orders to OGOship when status is set to processing', 'ogoship-nettivarasto-api-for-woocommerce' ),
-        'desc_tip'  => __( 'Orders are sent to OGOship when they are set to processing state, use this if sending on payment complete does not work.', 'ogoship-nettivarasto-api-for-woocommerce' ),
+        'desc_tip'  => __( 'Orders are sent to OGOship when they are set to processing state, use this if sending on payment complete does not work.', 'ogoship-nettivarasto-api-for-woocommerce' ). ':' . $processingHook,
         'id'        => 'woocommerce_nv_processing_hook_enable',
         'type'      => 'checkbox',
         'default'   => 'no',
