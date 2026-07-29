@@ -13,6 +13,7 @@ use OGOship\WooCommerce\Admin\LegacyNotice;
 use OGOship\WooCommerce\Admin\OrderColumn;
 use OGOship\WooCommerce\Admin\OrderPanel;
 use OGOship\WooCommerce\Admin\StatusPage;
+use OGOship\WooCommerce\Connect\ConnectPage;
 use OGOship\WooCommerce\Frontend\CustomerDisplay;
 use OGOship\WooCommerce\Product\Fields;
 use OGOship\WooCommerce\Product\VariationFields;
@@ -45,6 +46,9 @@ final class Plugin {
 		( new ApiActivity() )->register();
 		( new InfoController() )->register();
 		( new StatusPage() )->register();
+		// Connecting is what a merchant installs this plugin to do, so it stays available even
+		// while the 3.x plugin is still active -- the two do not overlap here.
+		( new ConnectPage() )->register();
 
 		if ( self::legacy_plugin_active() ) {
 			// The pre-4.0 plugin renders its own product tab and tracking
