@@ -95,9 +95,8 @@ wp config set WP_DEBUG_DISPLAY false --raw --type=constant >/dev/null
 wp config set DISABLE_WP_CRON true --raw --type=constant >/dev/null
 wp config set WP_ENVIRONMENT_TYPE local --type=constant >/dev/null
 
-# Point the plugin's Connect button at the dev API rather than production, which is what it
-# defaults to. Override with OGOSHIP_API_BASE when driving a local Ecom through an ngrok tunnel.
-wp config set OGOSHIP_ENVIRONMENT dev --type=constant >/dev/null
+# The Connect button targets the production API. Define OGOSHIP_API_BASE in wp-config.php to point
+# it somewhere else -- an ngrok tunnel, say, when driving a local Ecom.
 
 # Pretty permalinks: the REST API works either way, but /wp-json/ URLs in the
 # docs and the e2e suite assume them.

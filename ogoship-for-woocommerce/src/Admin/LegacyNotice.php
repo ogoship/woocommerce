@@ -9,6 +9,7 @@ declare( strict_types=1 );
 
 namespace OGOship\WooCommerce\Admin;
 
+use OGOship\WooCommerce\Connect\ConnectPage;
 use const OGOship\WooCommerce\LEGACY_PLUGIN;
 
 defined( 'ABSPATH' ) || exit;
@@ -38,9 +39,18 @@ final class LegacyNotice {
 
 	/**
 	 * Render the notice.
+	 *
+	 * Only on our own Connect screen: the merchant meets it where they went to
+	 * set the plugin up, rather than on every admin page they happen to open.
 	 */
 	public function render(): void {
 		if ( ! current_user_can( 'activate_plugins' ) ) {
+			return;
+		}
+
+		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+
+		if ( null === $screen || 'woocommerce_page_' . ConnectPage::MENU_SLUG !== $screen->id ) {
 			return;
 		}
 

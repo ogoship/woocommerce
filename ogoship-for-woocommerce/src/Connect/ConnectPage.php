@@ -23,8 +23,16 @@ defined( 'ABSPATH' ) || exit;
  */
 final class ConnectPage {
 
-	private const MENU_SLUG    = 'ogoship-connect';
+	public const MENU_SLUG     = 'ogoship-connect';
 	private const START_ACTION = 'ogoship_start_connect';
+
+	/**
+	 * The substring the connecting application's name leaves in the key description.
+	 */
+	private const APP_NAME = 'ogoship';
+
+	private const CACHE_GROUP   = 'ogoship';
+	private const KEY_CACHE_KEY = 'api_key_present';
 
 	/**
 	 * Register hooks.
@@ -137,9 +145,10 @@ final class ConnectPage {
 			esc_html__( 'This store is connected to OGOship.', 'ogoship-for-woocommerce' )
 		);
 
-		echo '<table class="widefat striped" style="max-width:640px"><tbody>';
-
+		// Nothing recorded yet means OGOship has not called in since this plugin was activated;
+		// the table would be empty, so skip it rather than render an empty frame.
 		if ( null !== $latest ) {
+			echo '<table class="widefat striped" style="max-width:640px"><tbody>';
 			printf(
 				'<tr><td>%1$s</td><td>%2$s</td></tr>',
 				esc_html__( 'Last contact from OGOship', 'ogoship-for-woocommerce' ),
@@ -149,15 +158,8 @@ final class ConnectPage {
 					esc_html( human_time_diff( $latest['time'] ) )
 				)
 			);
+			echo '</tbody></table>';
 		}
-
-		printf(
-			'<tr><td>%1$s</td><td><code>%2$s</code></td></tr>',
-			esc_html__( 'OGOship environment', 'ogoship-for-woocommerce' ),
-			esc_html( Environment::name() )
-		);
-
-		echo '</tbody></table>';
 
 		printf(
 			'<p class="description">%s</p>',
@@ -196,7 +198,7 @@ final class ConnectPage {
 
 		$url = add_query_arg(
 			array( 'store' => rawurlencode( home_url() ) ),
-			Environment::api_base() . '/api/ecom/WooCommerceOAuth/app'
+			ApiHost::base() . '/api/ecom/WooCommerceOAuth/app'
 		);
 
 		// Leaving wp-admin for OGOship, so wp_safe_redirect (same-host only) would refuse.
@@ -208,11 +210,45 @@ final class ConnectPage {
 	 * Best-effort "is OGOship reaching this store?".
 	 *
 	 * @remarks
-	 * Deliberately inferred from observed inbound API calls rather than from a stored flag. OGOship
-	 * connects by calling in, so its traffic is the only honest evidence — a flag would keep saying
-	 * "connected" long after a merchant revoked the key.
+	 * Deliberately inferred from live evidence rather than from a stored flag: a flag would keep
+	 * saying "connected" long after a merchant revoked the key. Both halves have to hold. The key
+	 * proves the credential the handshake created still exists — WooCommerce deletes the row on
+	 * revoke, so its absence is a revocation. The recorded traffic proves OGOship is actually using
+	 * it. A key alone is not a connection; it is a credential nobody has called with yet.
 	 */
 	public static function looks_connected(): bool {
-		return null !== ApiActivity::latest();
+		return null !== ApiActivity::latest() && self::has_api_key();
+	}
+
+	/**
+	 * Whether a WooCommerce API key from the OGOship handshake is still present.
+	 *
+	 * @remarks
+	 * WooCommerce builds the key description from the app name the connecting application supplies
+	 * to `wc-auth` ("<app name> - API ..."), which is the only marker distinguishing our key from
+	 * any other. Matched case-insensitively, which is what MySQL's default collation gives us.
+	 */
+	public static function has_api_key(): bool {
+		global $wpdb;
+
+		$found = wp_cache_get( self::KEY_CACHE_KEY, self::CACHE_GROUP );
+
+		if ( false === $found ) {
+			// A revoked key is a deleted row, so counting rows is the whole check. WooCommerce
+			// exposes no API for reading this table, hence the direct query.
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- no WooCommerce API covers the key table.
+			$found = (int) $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT COUNT(*) FROM {$wpdb->prefix}woocommerce_api_keys WHERE description LIKE %s",
+					'%' . $wpdb->esc_like( self::APP_NAME ) . '%'
+				)
+			);
+
+			// Short TTL rather than none: on a store with a persistent object cache this screen
+			// would otherwise keep showing a revoked key as present until the cache was flushed.
+			wp_cache_set( self::KEY_CACHE_KEY, $found, self::CACHE_GROUP, MINUTE_IN_SECONDS );
+		}
+
+		return (int) $found > 0;
 	}
 }
