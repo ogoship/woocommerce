@@ -1,0 +1,88 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master, v4 ]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Static checks are cheap and catch the largest class of WordPress mistakes
+  # (missing escaping, missing nonces, undefined variables), so they run first
+  # and across every PHP version the plugin claims to support.
+  static:
+    name: Lint and analyse (PHP ${{ matrix.php }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [ '8.1', '8.2', '8.3', '8.4' ]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+          tools: composer:v2
+
+      - name: Install dependencies
+        working-directory: ogoship-for-woocommerce
+        run: composer install --no-interaction --prefer-dist
+
+      - name: PHPCS
+        working-directory: ogoship-for-woocommerce
+        run: composer lint
+
+      - name: PHPStan
+        working-directory: ogoship-for-woocommerce
+        run: composer analyse
+
+      - name: PHPUnit
+        working-directory: ogoship-for-woocommerce
+        run: composer test
+
+  # The end-to-end suite is the only thing that proves the customer-facing
+  # tracking actually renders, so it runs against a real WooCommerce store
+  # provisioned exactly the way a developer's is.
+  e2e:
+    name: End-to-end
+    runs-on: ubuntu-latest
+    needs: static
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install Playwright
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+
+      - name: Provision the store
+        run: ./bin/setup.sh
+
+      - name: Run end-to-end tests
+        run: npx playwright test
+
+      - name: Collect WordPress debug log on failure
+        if: failure()
+        working-directory: .docker
+        run: docker compose exec -T wordpress cat /var/www/html/wp-content/debug.log || echo "No debug.log — no PHP errors were raised."
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7

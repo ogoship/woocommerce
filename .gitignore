@@ -1,0 +1,27 @@
+# Local dev environment
+.docker/.env
+.docker/.api-keys
+
+# Composer (dev tooling only -- the plugin autoloads itself at runtime).
+# Release builds bundle vendor/ via bin/build.sh; it is never committed.
+ogoship-for-woocommerce/vendor/
+composer.lock
+
+# Node / Playwright
+node_modules/
+test-results/
+playwright-report/
+blob-report/
+.playwright-mcp/
+
+# Build output
+dist/
+*.zip
+
+# Editors / OS
+.idea/
+.vscode/
+.DS_Store
+
+# PHPUnit
+.phpunit.result.cache

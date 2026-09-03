@@ -1,0 +1,119 @@
+# Local WooCommerce store for developing the OGOship plugin.
+#
+# Image versions deliberately mirror the shared OGOship test store on hetzner1
+# (/opt/woocommerce: wordpress:6.9-php8.3-apache + mariadb:11) so that "works
+# locally" and "works on the test store" mean the same thing.
+#
+# Usage: ../bin/setup.sh  (do not run `docker compose up` directly the first
+# time -- WordPress and WooCommerce still need provisioning by WP-CLI)
+
+name: ogoship-woo-dev
+
+services:
+  # TLS terminator.
+  #
+  # Not optional. WooCommerce authenticates REST consumer keys only when
+  # is_ssl() is true (WC_REST_Authentication::authenticate). Older versions
+  # allowed plain HTTP when WP_DEBUG was on; WooCommerce 10.x removed that
+  # escape hatch. Since OGOship reaches stores exclusively through
+  # key-authenticated wc/v3 calls, a plain-HTTP dev store cannot exercise a
+  # single realistic request.
+  #
+  # `tls internal` issues a self-signed certificate, so clients must skip
+  # verification: curl -k, and ignoreHTTPSErrors in Playwright.
+  proxy:
+    image: caddy:2-alpine
+    depends_on:
+      - wordpress
+    ports:
+      - "${WP_PORT:-8443}:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    restart: unless-stopped
+
+  wordpress:
+    image: wordpress:6.9-php8.3-apache
+    depends_on:
+      db:
+        condition: service_healthy
+    # No published port: everything arrives through the proxy, which is what
+    # makes is_ssl() true.
+    expose:
+      - "80"
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_NAME: ${DB_NAME:-wordpress}
+      WORDPRESS_DB_USER: ${DB_USER:-wordpress}
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD:-wordpress}
+      WORDPRESS_DEBUG: 1
+      # The remaining constants are set by bin/setup.sh with `wp config set`
+      # rather than WORDPRESS_CONFIG_EXTRA: the image only applies that when it
+      # first generates wp-config.php, and it mangles multi-line values. Doing
+      # it explicitly means both this container and the wpcli container read
+      # the same wp-config.php, which matters -- see the WP_DEBUG note there.
+    volumes:
+      - wp_data:/var/www/html
+      # The plugin under development, live-mounted. Edit on the host, reload the
+      # browser -- no rebuild, no copy step.
+      - ../ogoship-for-woocommerce:/var/www/html/wp-content/plugins/ogoship-for-woocommerce
+      # Drop-in that points wp_mail() at Mailpit. Written by bin/setup.sh.
+      - ./mu-plugins:/var/www/html/wp-content/mu-plugins
+    restart: unless-stopped
+
+  db:
+    image: mariadb:11
+    environment:
+      MARIADB_DATABASE: ${DB_NAME:-wordpress}
+      MARIADB_USER: ${DB_USER:-wordpress}
+      MARIADB_PASSWORD: ${DB_PASSWORD:-wordpress}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root}
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      # WordPress fails its install if it starts before MariaDB accepts
+      # connections, so this gate is load-bearing, not decoration.
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+  wpcli:
+    image: wordpress:cli-php8.3
+    depends_on:
+      - wordpress
+    # Runs as the same uid Apache uses, otherwise files WP-CLI creates are
+    # unwritable by the web server (the classic wp-content permission trap).
+    user: "33:33"
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_NAME: ${DB_NAME:-wordpress}
+      WORDPRESS_DB_USER: ${DB_USER:-wordpress}
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD:-wordpress}
+    volumes:
+      - wp_data:/var/www/html
+      - ../ogoship-for-woocommerce:/var/www/html/wp-content/plugins/ogoship-for-woocommerce
+      - ./mu-plugins:/var/www/html/wp-content/mu-plugins
+      # Provisioning scripts run with `wp eval-file /seed/<name>.php`.
+      - ./seed:/seed:ro
+    # Kept idle; bin/wp execs one-shot commands into it.
+    entrypoint: ["tail", "-f", "/dev/null"]
+
+  mailpit:
+    image: axllent/mailpit:latest
+    ports:
+      # Web UI for eyeballing what WooCommerce actually sent. The e2e suite
+      # reads the same data from the API on this port.
+      - "${MAILPIT_PORT:-8025}:8025"
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+    restart: unless-stopped
+
+volumes:
+  wp_data:
+  db_data:
+  caddy_data:
+  caddy_config:

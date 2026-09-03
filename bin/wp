@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+#
+# Run a WP-CLI command against the dev store.
+#
+#   bin/wp plugin list
+#   bin/wp post meta list 42
+#
+# The wpcli container runs as uid 33 (www-data), the same user Apache runs as,
+# so files it creates stay writable by the web server.
+#
+set -euo pipefail
+
+cd "$(dirname "${BASH_SOURCE[0]}")/../.docker"
+
+exec docker compose exec -T wpcli wp --path=/var/www/html "$@"

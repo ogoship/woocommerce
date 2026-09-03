@@ -1,0 +1,59 @@
+/**
+ * Admin styles, enqueued only on the product edit screen.
+ *
+ * The plugin this replaces injected its CSS inline on admin_head for every
+ * single admin page; this file exists so that does not happen again.
+ */
+
+.woocommerce_options_panel .ogoship-panel-intro,
+.woocommerce_options_panel .ogoship-panel-note {
+	padding: 0 12px 0 162px;
+	margin: 9px 0;
+	color: #50575e;
+	font-style: italic;
+}
+
+.ogoship-variation-fields {
+	clear: both;
+	padding-top: 8px;
+	border-top: 1px solid #e0e0e0;
+}
+
+.ogoship-variation-fields > p:first-child {
+	margin: 8px 0 4px;
+}
+
+/* Orders list column */
+.ogoship-status,
+.ogoship-exchange {
+	display: inline-block;
+	font-size: 11px;
+	line-height: 1.6;
+	padding: 0 6px;
+	border-radius: 3px;
+	background: #f0f0f1;
+	color: #3c434a;
+}
+
+.ogoship-exchange {
+	background: #fcf3e4;
+	color: #8a5700;
+}
+
+.ogoship-none {
+	color: #a7aaad;
+}
+
+/* Order edit metabox */
+ul.ogoship-order-panel {
+	margin: 0;
+}
+
+ul.ogoship-order-panel li {
+	margin: 0 0 10px;
+	padding: 0;
+}
+
+ul.ogoship-order-panel code {
+	word-break: break-all;
+}

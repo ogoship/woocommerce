@@ -1,0 +1,26 @@
+# TLS termination for the dev store.
+#
+# `tls internal` mints a self-signed certificate from Caddy's own local CA --
+# no external dependency, no ACME, works offline.
+
+{
+	# Nothing should try to reach Let's Encrypt from a laptop.
+	auto_https disable_redirects
+	admin off
+}
+
+https://localhost {
+	tls internal
+
+	reverse_proxy wordpress:80 {
+		# WordPress decides is_ssl() from this; mu-plugins/01-ssl-proxy.php
+		# turns it into $_SERVER['HTTPS'].
+		header_up X-Forwarded-Proto https
+
+		# Do NOT override Host here. Caddy already forwards the original Host
+		# untouched, and rewriting it to {host} drops the :8443 port -- which
+		# makes WordPress compute a URL that differs from siteurl and
+		# canonical-redirect to itself forever.
+		header_up X-Forwarded-Host {http.request.hostport}
+	}
+}
