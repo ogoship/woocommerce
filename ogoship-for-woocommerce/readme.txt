@@ -4,7 +4,7 @@ Tags: ogoship, fulfillment, 3PL, logistics, shipment tracking
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.0.6
+Stable tag: 1.0.0
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
@@ -74,9 +74,8 @@ Yes, with HPOS on or off, and with both the classic and block-based checkout.
 == Screenshots ==
 
 1. The OGOship tab on the product edit screen.
-2. OGOship fields on an individual variation, showing the inherited value.
+2. The connection status panel at WooCommerce → Status → OGOship.
 3. Tracking as the customer sees it on the order page.
-4. The connection status panel at WooCommerce → Status → OGOship.
 
 == Changelog ==
 

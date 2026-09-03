@@ -3,7 +3,7 @@
  * Plugin Name:       OGOship for WooCommerce
  * Plugin URI:        https://github.com/ogoship/woocommerce
  * Description:       Companion plugin for the OGOship fulfillment integration. Adds the OGOship product fields (EAN, HS code, country of origin, supplier, customs data) and shows shipment tracking to your customers.
- * Version:           1.0.6
+ * Version:           1.0.0
  * Author:            OGOship
  * Author URI:        https://www.ogoship.com
  * License:           MIT
@@ -14,7 +14,7 @@
  * Requires PHP:      8.1
  * Requires Plugins:  woocommerce
  * WC requires at least: 8.0
- * WC tested up to:   10.9
+ * WC tested up to:   11.0.1
  *
  * @package OGOship\WooCommerce
  *
@@ -28,7 +28,7 @@ namespace OGOship\WooCommerce;
 
 defined( 'ABSPATH' ) || exit;
 
-const VERSION     = '1.0.6';
+const VERSION     = '1.0.0';
 const PLUGIN_FILE = __FILE__;
 
 /**
