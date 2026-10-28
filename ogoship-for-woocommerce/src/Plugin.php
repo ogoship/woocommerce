@@ -18,6 +18,7 @@ use OGOship\WooCommerce\Frontend\CustomerDisplay;
 use OGOship\WooCommerce\Product\Fields;
 use OGOship\WooCommerce\Product\VariationFields;
 use OGOship\WooCommerce\Rest\InfoController;
+use OGOship\WooCommerce\Shipping\Shipping;
 use OGOship\WooCommerce\Support\ApiActivity;
 
 defined( 'ABSPATH' ) || exit;
@@ -49,6 +50,8 @@ final class Plugin {
 		// Connecting is what a merchant installs this plugin to do, so it stays available even
 		// while the 3.x plugin is still active -- the two do not overlap here.
 		( new ConnectPage() )->register();
+		// The 3.x plugin has no shipping method, so pickup points at checkout never overlap with it.
+		( new Shipping() )->register();
 
 		if ( self::legacy_plugin_active() ) {
 			// The pre-4.0 plugin renders its own product tab and tracking

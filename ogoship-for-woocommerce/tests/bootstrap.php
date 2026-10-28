@@ -20,6 +20,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	define( 'ABSPATH', __DIR__ . '/' );
 }
 
+// WordPress time constants the classes use.
+if ( ! defined( 'MINUTE_IN_SECONDS' ) ) {
+	define( 'MINUTE_IN_SECONDS', 60 );
+}
+
 // Constants the plugin's main file would normally define.
 if ( ! defined( 'OGOship\WooCommerce\VERSION' ) ) {
 	define( 'OGOship\WooCommerce\VERSION', '1.0.0-test' );
@@ -41,6 +46,7 @@ if ( ! class_exists( 'WC_Product' ) ) {
 	class WC_Product {}
 	class WC_Product_Variation extends WC_Product {}
 	class WC_Order {}
+	class WC_Shipping_Method {}
 	// phpcs:enable
 }
 

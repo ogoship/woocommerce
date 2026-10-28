@@ -105,6 +105,8 @@ final class InfoController {
 			'tracking_display',
 			// _ogoship_tracking_status is surfaced to merchant and customer.
 			'tracking_status',
+			// The OGOship shipping method asks OGOship for checkout rates (pickup points).
+			'shipping_rates',
 		);
 	}
 
