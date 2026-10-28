@@ -14,7 +14,7 @@ Companion plugin for the OGOship fulfillment service. Adds OGOship product field
 
 OGOship is a third-party logistics service that stores and ships your products for you.
 
-OGOship connects to your shop through the WooCommerce REST API, so orders, stock levels and fulfillment flow between the two without a plugin. This plugin adds the two things that connection cannot provide on its own.
+OGOship connects to your shop through the WooCommerce REST API, so orders, stock levels and fulfillment flow between the two without a plugin. This plugin adds what that connection cannot provide on its own.
 
 **OGOship product fields**
 
@@ -37,6 +37,12 @@ Once OGOship ships an order, the tracking number, tracking link and delivery sta
 * on the order confirmation page
 * in your WooCommerce order emails, both the HTML and the plain-text versions
 
+**Pickup points at checkout**
+
+An OGOship shipping method for your shipping zones. At checkout it lists the pickup points nearest to the customer's address as shipping options — one option per pickup point, with its address — followed by any home delivery options. The carriers, prices, free-shipping thresholds and which options show where are set in myOGO, so there is no separate pickup point plugin to install or keep in step with OGOship. The order arrives at OGOship with the chosen pickup point already filled in.
+
+Works with both the classic and the block-based checkout.
+
 **For your OGOship support team**
 
 A read-only panel at WooCommerce → Status → OGOship shows whether OGOship is actually reaching your store, when it last did, and which order was most recently given tracking. It stores no credentials.
@@ -57,7 +63,15 @@ No. OGOship works without it. Install it if you want to enter EAN codes, customs
 
 = Does it send my orders to OGOship? =
 
-No. OGOship reads orders from your store over the WooCommerce REST API. This plugin never sends anything to OGOship and stores no OGOship credentials.
+No. OGOship reads orders from your store over the WooCommerce REST API. The only thing this plugin sends to OGOship is the shipping method's rate request at checkout (see External services), and it stores no OGOship credentials of its own.
+
+= How do I show pickup points at checkout? =
+
+Connect the store to OGOship, set up the delivery methods and prices in myOGO (Integrations → your store → Pickup points at checkout), then add the OGOship shipping method to your shipping zones under WooCommerce → Settings → Shipping. The options appear once the customer has entered an address. If OGOship cannot be reached, the OGOship options are left out and your zone's other shipping methods still show.
+
+= Are the pickup point prices with or without tax? =
+
+Set the method's Tax status in the zone. Taxable (the default) treats the prices from myOGO as excluding tax, as WooCommerce does for its own flat rates; None adds no tax.
 
 = Where does the tracking information come from? =
 
@@ -71,6 +85,12 @@ Check WooCommerce → Status → OGOship. If the panel shows no recent API activ
 
 Yes, with HPOS on or off, and with both the classic and block-based checkout.
 
+== External services ==
+
+The OGOship shipping method connects to OGOship's API (https://api.ogoship.com) while a customer is at the cart or checkout, to get the shipping options to show. It sends the shipping destination (country, postcode, city and street address), the total weight and value of the items being shipped, the store currency, the shipping zone, and the store's address; nothing about the customer beyond the shipping destination. The request is signed with the REST API key OGOship was given when you connected the store. Nothing is sent until you add the OGOship method to a shipping zone.
+
+The service is provided by OGOship: [privacy policy](https://ogoship.com/privacy-policy/).
+
 == Screenshots ==
 
 1. The OGOship tab on the product edit screen.
@@ -78,6 +98,9 @@ Yes, with HPOS on or off, and with both the classic and block-based checkout.
 3. Tracking as the customer sees it on the order page.
 
 == Changelog ==
+
+= Unreleased =
+* Added the OGOship shipping method: pickup points and home delivery at checkout, with the carriers and prices set in myOGO.
 
 = 1.0.0 =
 * First release of the rewritten plugin.

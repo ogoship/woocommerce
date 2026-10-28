@@ -12,9 +12,14 @@ const repoRoot = resolve( dirname( fileURLToPath( import.meta.url ) ), '../..' )
  * @returns {string}
  */
 export function wp( args ) {
-	return execFileSync( resolve( repoRoot, 'bin/wp' ), args, {
+	const script = resolve( repoRoot, 'bin/wp' );
+	// Windows cannot exec a shell script: run it through Git Bash, and keep MSYS from rewriting
+	// the container paths in the arguments (--path=/var/www/html) into Windows ones.
+	const [ file, argv ] = process.platform === 'win32' ? [ 'bash', [ script, ...args ] ] : [ script, args ];
+	return execFileSync( file, argv, {
 		encoding: 'utf8',
 		cwd: repoRoot,
+		env: { ...process.env, MSYS_NO_PATHCONV: '1' },
 	} ).trim();
 }
 

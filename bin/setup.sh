@@ -103,7 +103,10 @@ wp config set WP_ENVIRONMENT_TYPE local --type=constant >/dev/null
 wp rewrite structure '/%postname%/' --hard >/dev/null
 
 echo "==> Installing WooCommerce"
-wp plugin is-installed woocommerce >/dev/null 2>&1 || wp plugin install woocommerce
+# Pinned: the newest WooCommerce can require a newer WordPress than the image above (WooCommerce
+# 11.1 needs WordPress 7.0), and then `wp plugin install` installs nothing. Keep it at the plugin's
+# "WC tested up to"; set WC_VERSION in .docker/.env to try another.
+wp plugin is-installed woocommerce >/dev/null 2>&1 || wp plugin install woocommerce --version="${WC_VERSION:-11.0.1}"
 wp plugin activate woocommerce >/dev/null
 
 echo "==> Configuring the store"
@@ -152,6 +155,9 @@ wp plugin activate ogoship-for-woocommerce >/dev/null
 echo "==> Seeding products and orders"
 wp eval-file /seed/products.php
 wp eval-file /seed/orders.php
+
+echo "==> Adding the OGOship shipping method to a Finland zone"
+wp eval-file /seed/shipping.php
 
 echo "==> Creating a WooCommerce REST key for the simulated OGOship server"
 wp eval-file /seed/api-key.php > "$DOCKER_DIR/.api-keys"
