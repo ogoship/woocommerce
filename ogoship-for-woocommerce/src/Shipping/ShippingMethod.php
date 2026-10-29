@@ -102,18 +102,35 @@ class ShippingMethod extends \WC_Shipping_Method {
 		);
 
 		foreach ( ( new RatesClient() )->rates( $fields, $key ) as $rate ) {
-			$this->add_rate(
-				array(
-					'id'          => $this->get_rate_id( $rate['id'] ),
-					'label'       => $rate['label'],
-					'cost'        => $rate['cost'],
-					'package'     => $package,
-					// WooCommerce copies a rate's meta onto the order's shipping line.
-					'meta_data'   => $rate['meta_data'],
-					// Shown under the rate name since WooCommerce 9.2; ignored before.
-					'description' => $rate['description'],
-				)
-			);
+			$this->add_ogoship_rate( $rate, $package );
+		}
+	}
+
+	/**
+	 * Add one of OGOship's rates.
+	 *
+	 * @param array{id: string, label: string, description: string, cost: float, meta_data: array<string, string>} $rate    The rate.
+	 * @param array<string, mixed>                                                                                 $package The package.
+	 */
+	private function add_ogoship_rate( array $rate, array $package ): void {
+		$rate_id = $this->get_rate_id( $rate['id'] );
+		$this->add_rate(
+			array(
+				'id'        => $rate_id,
+				'label'     => $rate['label'],
+				'cost'      => $rate['cost'],
+				'package'   => $package,
+				// WooCommerce copies a rate's meta onto the order's shipping line.
+				'meta_data' => $rate['meta_data'],
+			)
+		);
+
+		// The pickup point's address under its name. add_rate() takes no description, but the rate
+		// has one since WooCommerce 9.2, and the block checkout shows it.
+		$added = $this->rates[ $rate_id ] ?? null;
+		// @phpstan-ignore function.alreadyNarrowedType (the stubs are WooCommerce 9.x; the plugin runs on 8.x too, before set_description)
+		if ( '' !== $rate['description'] && $added instanceof \WC_Shipping_Rate && method_exists( $added, 'set_description' ) ) {
+			$added->set_description( $rate['description'] );
 		}
 	}
 }

@@ -69,6 +69,8 @@ test.describe( 'OGOship shipping rates at checkout', () => {
 		] );
 		// Store API prices are in minor units.
 		expect( rates[ 0 ].price ).toBe( '590' );
+		// The pickup point's address shows under its name.
+		expect( rates[ 0 ].description ).toContain( 'Runeberginkatu 1' );
 
 		// What the plugin asked: the matched zone, grams, the cart value, the store's key.
 		const asked = JSON.parse( wpEval( `echo wp_json_encode( get_option( 'ogoship_dev_rates_last_request' ) );` ) );
