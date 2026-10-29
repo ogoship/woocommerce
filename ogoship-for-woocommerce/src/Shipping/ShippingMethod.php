@@ -86,14 +86,19 @@ class ShippingMethod extends \WC_Shipping_Method {
 			return;
 		}
 
-		$destination = isset( $package['destination'] ) && is_array( $package['destination'] ) ? $package['destination'] : array();
-		if ( empty( $destination['country'] ) ) {
+		// WooCommerce recalculates on every address change; a half-filled address is not worth a search.
+		$destination = RateRequest::destination(
+			$package,
+			static fn( string $postcode, string $country ): bool => \WC_Validation::is_postcode( $postcode, $country )
+		);
+		if ( null === $destination ) {
 			return;
 		}
 
 		$zone   = \WC_Shipping_Zones::get_zone_matching_package( $package );
 		$fields = RateRequest::build(
 			$package,
+			$destination,
 			(int) $zone->get_id(),
 			(int) $this->instance_id,
 			home_url(),

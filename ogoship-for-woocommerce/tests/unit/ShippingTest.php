@@ -75,7 +75,9 @@ final class ShippingTest extends TestCase {
 			),
 		);
 
-		$fields = RateRequest::build( $package, 3, 7, 'https://shop.example.com', '1a2b3c4', 'EUR' );
+		$destination = RateRequest::destination( $package, self::finnish_postcodes() );
+		$this->assertNotNull( $destination );
+		$fields = RateRequest::build( $package, $destination, 3, 7, 'https://shop.example.com', '1a2b3c4', 'EUR' );
 
 		$this->assertSame( 'https://shop.example.com', $fields['store'] );
 		$this->assertSame( '1a2b3c4', $fields['key_ending'] );
@@ -88,6 +90,89 @@ final class ShippingTest extends TestCase {
 		$this->assertSame( 39.9, $fields['contents_value'] );
 		$this->assertSame( 'EUR', $fields['currency'] );
 		$this->assertArrayNotHasKey( 'timestamp', $fields );
+	}
+
+	/**
+	 * Stand-in for WC_Validation::is_postcode: five digits is a Finnish postcode.
+	 *
+	 * @return callable(string, string): bool
+	 */
+	private static function finnish_postcodes(): callable {
+		return static fn( string $postcode, string $country ): bool => 'FI' === $country && 1 === preg_match( '/^\d{5}$/', $postcode );
+	}
+
+	/**
+	 * The destination check for one address.
+	 *
+	 * @param array<string, string> $destination Package destination.
+	 * @return array<string, string>|null
+	 */
+	private static function destination( array $destination ): ?array {
+		return RateRequest::destination( array( 'destination' => $destination ), self::finnish_postcodes() );
+	}
+
+	public function test_a_half_filled_address_is_not_searched(): void {
+		// Country only, a half-typed postcode, a one-letter city: WooCommerce recalculates on each.
+		$this->assertNull( self::destination( array( 'country' => 'FI' ) ) );
+		$this->assertNull(
+			self::destination(
+				array(
+					'country' => 'FI',
+					'postcode' => '001',
+				)
+			)
+		);
+		$this->assertNull(
+			self::destination(
+				array(
+					'country' => 'FI',
+					'city' => 'H',
+				)
+			)
+		);
+		$this->assertNull(
+			self::destination(
+				array(
+					'postcode' => '00100',
+					'city' => 'Helsinki',
+				)
+			)
+		);
+	}
+
+	public function test_a_valid_postcode_or_a_city_is_enough(): void {
+		$this->assertSame(
+			'00100',
+			self::destination(
+				array(
+					'country' => 'FI',
+					'postcode' => '00100',
+				)
+			)['postcode'] ?? null
+		);
+		$this->assertSame(
+			'Helsinki',
+			self::destination(
+				array(
+					'country' => 'FI',
+					'city' => 'Helsinki',
+				)
+			)['city'] ?? null
+		);
+	}
+
+	public function test_an_invalid_postcode_is_dropped_so_the_city_still_searches(): void {
+		$destination = self::destination(
+			array(
+				'country'  => 'FI',
+				'postcode' => '0010',
+				'city'     => 'Helsinki',
+			)
+		);
+
+		$this->assertNotNull( $destination );
+		$this->assertSame( '', $destination['postcode'] );
+		$this->assertSame( 'Helsinki', $destination['city'] );
 	}
 
 	public function test_signature_matches_what_ogoship_verifies(): void {

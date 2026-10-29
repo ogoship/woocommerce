@@ -21,31 +21,68 @@ defined( 'ABSPATH' ) || exit;
 final class RateRequest {
 
 	/**
+	 * A city needs at least this many characters before it is worth a search: one letter is
+	 * someone still typing.
+	 */
+	private const MIN_CITY_LENGTH = 2;
+
+	/**
+	 * The package destination, cleaned, when it is complete enough to search pickup points near it;
+	 * null while it is not. Searchable means a country plus a postcode valid for that country, or a
+	 * city. A postcode that is not valid (half typed, mistyped) is dropped rather than sent, so a city
+	 * alone can still search.
+	 *
+	 * @param array<string, mixed>          $package        The shipping package.
+	 * @param callable(string, string):bool $valid_postcode Whether a postcode is valid for a country (WC_Validation::is_postcode).
+	 * @return array{country: string, postcode: string, city: string, address: string}|null
+	 */
+	public static function destination( array $package, callable $valid_postcode ): ?array {
+		$destination = isset( $package['destination'] ) && is_array( $package['destination'] ) ? $package['destination'] : array();
+
+		$country  = strtoupper( self::text( $destination, 'country' ) );
+		$postcode = self::text( $destination, 'postcode' );
+		$city     = self::text( $destination, 'city' );
+
+		if ( '' === $country ) {
+			return null;
+		}
+
+		if ( '' !== $postcode && ! $valid_postcode( $postcode, $country ) ) {
+			$postcode = '';
+		}
+
+		if ( '' === $postcode && mb_strlen( $city ) < self::MIN_CITY_LENGTH ) {
+			return null;
+		}
+
+		return array(
+			'country'  => $country,
+			'postcode' => $postcode,
+			'city'     => $city,
+			'address'  => self::text( $destination, 'address' ),
+		);
+	}
+
+	/**
 	 * The request fields, without `timestamp` (the client adds it when signing, so the cache key
 	 * does not change every second).
 	 *
-	 * @param array<string, mixed> $package     The shipping package WooCommerce passes to `calculate_shipping()`.
-	 * @param int                  $zone_id     The shipping zone WooCommerce matched the package to.
-	 * @param int                  $instance_id The OGOship method's instance in that zone.
-	 * @param string               $store       The store's home URL.
-	 * @param string               $key_ending  The OGOship key's `truncated_key`.
-	 * @param string               $currency    The store currency.
+	 * @param array<string, mixed>  $package     The shipping package WooCommerce passes to `calculate_shipping()`.
+	 * @param array<string, string> $destination The destination from {@see RateRequest::destination()}.
+	 * @param int                   $zone_id     The shipping zone WooCommerce matched the package to.
+	 * @param int                   $instance_id The OGOship method's instance in that zone.
+	 * @param string                $store       The store's home URL.
+	 * @param string                $key_ending  The OGOship key's `truncated_key`.
+	 * @param string                $currency    The store currency.
 	 * @return array<string, mixed>
 	 */
-	public static function build( array $package, int $zone_id, int $instance_id, string $store, string $key_ending, string $currency ): array {
-		$destination = isset( $package['destination'] ) && is_array( $package['destination'] ) ? $package['destination'] : array();
-
+	public static function build( array $package, array $destination, int $zone_id, int $instance_id, string $store, string $key_ending, string $currency ): array {
 		return array(
 			'store'                 => $store,
 			'key_ending'            => $key_ending,
 			'zone_id'               => $zone_id,
 			'instance_id'           => $instance_id,
-			'destination'           => array(
-				'country'  => strtoupper( self::text( $destination, 'country' ) ),
-				'postcode' => self::text( $destination, 'postcode' ),
-				'city'     => self::text( $destination, 'city' ),
-				'address'  => self::text( $destination, 'address' ),
-			),
+			'destination'           => $destination,
 			'contents_weight_grams' => self::weight_grams( $package ),
 			'contents_value'        => round( (float) ( $package['contents_cost'] ?? 0 ), 2 ),
 			'currency'              => $currency,

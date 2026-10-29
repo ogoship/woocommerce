@@ -61,7 +61,8 @@ test.describe( 'OGOship shipping rates at checkout', () => {
 			billing_address: { ...ADDRESS, email: 'ada@example.test', phone: '+358401234567' },
 		} );
 
-		const rates = cart.shipping_rates[ 0 ].shipping_rates;
+		// Only OGOship's options: the zone may offer the store's other methods too.
+		const rates = cart.shipping_rates[ 0 ].shipping_rates.filter( ( r ) => r.method_id === 'ogoship' );
 		expect( rates.map( ( r ) => r.name ) ).toEqual( [
 			'Posti – K-market Etu-Töölö',
 			'Posti – Postin Automaatti, Lidl',
@@ -120,6 +121,30 @@ test.describe( 'OGOship shipping rates at checkout', () => {
 		expect( html ).toContain( 'Posti – Postin Automaatti, Lidl' );
 		expect( html ).not.toContain( 'ogo|' );
 		expect( html ).not.toContain( 'ogoship_' );
+	} );
+
+	test( 'does not ask OGOship about a half-filled address', async ( { page } ) => {
+		const session = { nonce: '' };
+		const lastRequest = () => wpEval( `echo wp_json_encode( get_option( 'ogoship_dev_rates_last_request', null ) );` );
+		await store( page.request, session, 'cart' );
+		await store( page.request, session, 'cart/add-item', { id: productId, quantity: 1 } );
+
+		// The country alone (the block checkout's first update): nothing to search near. The Store API
+		// rejects an invalid postcode itself, so a half-typed one never gets this far from the block
+		// checkout; the unit tests cover it for the classic checkout.
+		wpEval( `delete_option( 'ogoship_dev_rates_last_request' );` );
+		const partial = await store( page.request, session, 'cart/update-customer', {
+			shipping_address: { ...ADDRESS, postcode: '', city: '', address_1: '' },
+		} );
+		expect( lastRequest() ).toBe( 'null' );
+		expect( ( partial.shipping_rates[ 0 ]?.shipping_rates ?? [] ).filter( ( r ) => r.method_id === 'ogoship' ) ).toEqual( [] );
+
+		// A city is enough: asked, by city only.
+		await store( page.request, session, 'cart/update-customer', {
+			shipping_address: { ...ADDRESS, postcode: '', address_1: '' },
+		} );
+		const asked = JSON.parse( lastRequest() );
+		expect( asked.destination ).toMatchObject( { country: 'FI', postcode: '', city: 'Helsinki' } );
 	} );
 
 	test( 'offers nothing where OGOship has no rates', async ( { page } ) => {
