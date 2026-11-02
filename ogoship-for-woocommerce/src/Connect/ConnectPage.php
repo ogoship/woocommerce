@@ -145,6 +145,9 @@ final class ConnectPage {
 			esc_html__( 'This store is connected to OGOship.', 'ogoship-for-woocommerce' )
 		);
 
+		// The store's OGOship page: orders, delivery options at checkout, the account.
+		$embedded = EmbeddedPage::render();
+
 		// Nothing recorded yet means OGOship has not called in since this plugin was activated;
 		// the table would be empty, so skip it rather than render an empty frame.
 		if ( null !== $latest ) {
@@ -163,10 +166,15 @@ final class ConnectPage {
 
 		printf(
 			'<p class="description">%s</p>',
-			esc_html__(
-				'Fulfillment settings live in OGOship. This screen only shows whether the connection is working — see WooCommerce → Status → OGOship for more detail.',
-				'ogoship-for-woocommerce'
-			)
+			$embedded
+				? esc_html__(
+					'Fulfillment settings live in OGOship. See WooCommerce → Status → OGOship for more detail on the connection.',
+					'ogoship-for-woocommerce'
+				)
+				: esc_html__(
+					'Fulfillment settings live in OGOship. This screen only shows whether the connection is working — see WooCommerce → Status → OGOship for more detail.',
+					'ogoship-for-woocommerce'
+				)
 		);
 
 		printf(

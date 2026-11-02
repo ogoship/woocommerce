@@ -63,7 +63,7 @@ No. OGOship works without it. Install it if you want to enter EAN codes, customs
 
 = Does it send my orders to OGOship? =
 
-No. OGOship reads orders from your store over the WooCommerce REST API. The only thing this plugin sends to OGOship is the shipping method's rate request at checkout (see External services), and it stores no OGOship credentials of its own.
+No. OGOship reads orders from your store over the WooCommerce REST API. The only things this plugin sends to OGOship are the shipping method's rate request at checkout and, on the WooCommerce → OGOship screen, a short-lived sign-in for the OGOship page shown there (see External services). It stores no OGOship credentials of its own.
 
 = How do I show pickup points at checkout? =
 
@@ -89,6 +89,8 @@ Yes, with HPOS on or off, and with both the classic and block-based checkout.
 
 The OGOship shipping method connects to OGOship's API (https://api.ogoship.com) while a customer is at the cart or checkout, to get the shipping options to show. It sends the shipping destination (country, postcode, city and street address), the total weight and value of the items being shipped, the store currency, the shipping zone, and the store's address; nothing about the customer beyond the shipping destination. The request is signed with the REST API key OGOship was given when you connected the store. Nothing is sent until you add the OGOship method to a shipping zone.
 
+Once the store is connected, the WooCommerce → OGOship screen shows the store's OGOship page (https://my2.ogoship.com/woo/) in a frame: your order counts, the delivery options offered at checkout and your OGOship account. The page is loaded only when a store manager opens that screen. To call OGOship it gets a session token from WordPress that names the store, the REST API key's last characters and the WordPress user id, valid for two minutes and signed with the REST API key OGOship was given when you connected the store; the key itself is not sent.
+
 The service is provided by OGOship: [privacy policy](https://ogoship.com/privacy-policy/).
 
 == Screenshots ==
@@ -100,6 +102,7 @@ The service is provided by OGOship: [privacy policy](https://ogoship.com/privacy
 == Changelog ==
 
 = Unreleased =
+* Added the OGOship page to WooCommerce → OGOship once the store is connected: order counts, the delivery options at checkout with a tester, and the OGOship account.
 * Added the OGOship shipping method: pickup points and home delivery at checkout, with the carriers and prices set in myOGO.
 
 = 1.0.0 =
