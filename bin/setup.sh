@@ -46,6 +46,7 @@ check_port() {
 	exit 1
 }
 check_port "${WP_PORT:-8443}" WP_PORT
+check_port "${WP_HTTP_PORT:-8080}" WP_HTTP_PORT
 check_port "${MAILPIT_PORT:-8026}" MAILPIT_PORT
 
 echo "==> Starting containers"

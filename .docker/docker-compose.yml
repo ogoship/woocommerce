@@ -27,6 +27,9 @@ services:
       - wordpress
     ports:
       - "${WP_PORT:-8443}:443"
+      # Plain HTTP for a front that already terminates TLS (e.g. a tunnel).
+      # Loopback only: anything else reaching it would bypass TLS.
+      - "127.0.0.1:${WP_HTTP_PORT:-8080}:8080"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy_data:/data
@@ -34,7 +37,9 @@ services:
     restart: unless-stopped
 
   wordpress:
-    image: wordpress:6.9-php8.3-apache
+    # 6.9-* tags get no rebuilds since 7.0, so no PHP security fixes. The image upgrades WordPress
+    # core in the wp_data volume to its own version on start (6.9 -> 7.1.4 here).
+    image: wordpress:7.1-php8.3-apache
     depends_on:
       db:
         condition: service_healthy

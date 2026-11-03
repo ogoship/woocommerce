@@ -24,3 +24,13 @@ https://localhost {
 		header_up X-Forwarded-Host {http.request.hostport}
 	}
 }
+
+# Plain HTTP for a TLS-terminating front (a tunnel or load balancer that
+# already serves HTTPS to the world). Published on 127.0.0.1 only. The front
+# speaks HTTPS to visitors, so tell WordPress that, exactly as above.
+http://:8080 {
+	reverse_proxy wordpress:80 {
+		header_up X-Forwarded-Proto https
+		header_up X-Forwarded-Host {http.request.hostport}
+	}
+}
