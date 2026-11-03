@@ -4,11 +4,11 @@ Tags: ogoship, fulfillment, 3PL, logistics, shipment tracking
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.0.0
+Stable tag: 1.1.1
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
-Companion plugin for the OGOship fulfillment service. Adds OGOship product fields and shows shipment tracking to your customers.
+Companion plugin for the OGOship fulfillment service. Adds OGOship product fields, pickup points at checkout and shipment tracking.
 
 == Description ==
 
@@ -101,7 +101,7 @@ The service is provided by OGOship: [privacy policy](https://ogoship.com/privacy
 
 == Changelog ==
 
-= Unreleased =
+= 1.1.1 =
 * Added the OGOship page to WooCommerce → OGOship once the store is connected: order counts, the delivery options at checkout with a tester, and the OGOship account.
 * Added the OGOship shipping method: pickup points and home delivery at checkout, with the carriers and prices set in myOGO.
 
@@ -115,6 +115,9 @@ The service is provided by OGOship: [privacy policy](https://ogoship.com/privacy
 * Removed order sending, stock updating and product export. OGOship does all of this directly now.
 
 == Upgrade Notice ==
+
+= 1.1.1 =
+Adds the OGOship shipping method, with pickup points at checkout, and the OGOship page under WooCommerce → OGOship.
 
 = 1.0.0 =
 Replaces "Ogoship API for WooCommerce" 3.x. Your product data carries across untouched. Install this, then deactivate the old plugin.
