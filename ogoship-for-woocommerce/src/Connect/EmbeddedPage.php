@@ -135,7 +135,10 @@ final class EmbeddedPage {
 			return false;
 		}
 
-		$src = add_query_arg( array( 'origin' => rawurlencode( $admin_origin ) ), self::app_base() . '/woo/' );
+		// The origin goes in as it is (":" and "/" are allowed in a query): the OGOship page's
+		// frame-ancestors header is built from the raw query value, which is not decoded first, so an
+		// encoded origin would leave the frame blocked.
+		$src = add_query_arg( array( 'origin' => $admin_origin ), self::app_base() . '/woo/' );
 
 		printf(
 			'<iframe id="ogoship-embedded" src="%1$s" title="%2$s" style="width:100%%;max-width:792px;height:900px;border:0;display:block;margin:16px 0" loading="eager"></iframe>',
