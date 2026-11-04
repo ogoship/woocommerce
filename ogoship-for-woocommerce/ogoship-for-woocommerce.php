@@ -14,7 +14,7 @@
  * Requires PHP:      8.1
  * Requires Plugins:  woocommerce
  * WC requires at least: 8.0
- * WC tested up to:   11.0.1
+ * WC tested up to:   11.2.1
  *
  * @package OGOship\WooCommerce
  *

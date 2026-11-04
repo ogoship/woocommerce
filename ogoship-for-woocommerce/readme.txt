@@ -2,7 +2,7 @@
 Contributors: ogoship
 Tags: ogoship, fulfillment, 3PL, logistics, shipment tracking
 Requires at least: 6.5
-Tested up to: 7.1
+Tested up to: 7.1.4
 Requires PHP: 8.1
 Stable tag: 1.1.1
 License: MIT

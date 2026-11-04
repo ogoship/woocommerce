@@ -107,7 +107,7 @@ echo "==> Installing WooCommerce"
 # Pinned: the newest WooCommerce can require a newer WordPress than the image above (WooCommerce
 # 11.1 needs WordPress 7.0), and then `wp plugin install` installs nothing. Keep it at the plugin's
 # "WC tested up to"; set WC_VERSION in .docker/.env to try another.
-wp plugin is-installed woocommerce >/dev/null 2>&1 || wp plugin install woocommerce --version="${WC_VERSION:-11.0.1}"
+wp plugin is-installed woocommerce >/dev/null 2>&1 || wp plugin install woocommerce --version="${WC_VERSION:-11.2.1}"
 wp plugin activate woocommerce >/dev/null
 
 echo "==> Configuring the store"
