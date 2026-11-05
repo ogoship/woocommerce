@@ -4,7 +4,7 @@ Tags: ogoship, fulfillment, 3PL, logistics, shipment tracking
 Requires at least: 6.5
 Tested up to: 7.1.4
 Requires PHP: 8.1
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
@@ -101,6 +101,9 @@ The service is provided by OGOship: [privacy policy](https://ogoship.com/privacy
 
 == Changelog ==
 
+= 1.1.2 =
+* Moving from the old plugin: the button that deactivates it appears once the store is connected, because the old plugin sends the orders until then.
+
 = 1.1.1 =
 * Added the OGOship page to WooCommerce → OGOship once the store is connected: order counts, the delivery options at checkout with a tester, and the OGOship account.
 * Added the OGOship shipping method: pickup points and home delivery at checkout, with the carriers and prices set in myOGO.
@@ -115,6 +118,9 @@ The service is provided by OGOship: [privacy policy](https://ogoship.com/privacy
 * Removed order sending, stock updating and product export. OGOship does all of this directly now.
 
 == Upgrade Notice ==
+
+= 1.1.2 =
+Moving from the old plugin: connect your store before deactivating it.
 
 = 1.1.1 =
 Adds the OGOship shipping method, with pickup points at checkout, and the OGOship page under WooCommerce → OGOship.

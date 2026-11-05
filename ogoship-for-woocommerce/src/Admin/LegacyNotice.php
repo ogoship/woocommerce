@@ -71,11 +71,19 @@ final class LegacyNotice {
 				'ogoship-for-woocommerce'
 			)
 		);
-		printf(
-			'<p><a href="%1$s" class="button button-primary">%2$s</a></p>',
-			esc_url( $url ),
-			esc_html__( 'Deactivate the old OGOship plugin', 'ogoship-for-woocommerce' )
-		);
+		if ( ConnectPage::looks_connected() ) {
+			printf(
+				'<p><a href="%1$s" class="button button-primary">%2$s</a></p>',
+				esc_url( $url ),
+				esc_html__( 'Deactivate the old OGOship plugin', 'ogoship-for-woocommerce' )
+			);
+		} else {
+			// Until OGOship reads the store's orders itself, the old plugin is what sends them.
+			printf(
+				'<p>%s</p>',
+				esc_html__( 'Connect your store first. The old plugin sends your orders to OGOship until then, so keep it active for now.', 'ogoship-for-woocommerce' )
+			);
+		}
 		echo '</div>';
 	}
 
