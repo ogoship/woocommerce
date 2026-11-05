@@ -53,7 +53,7 @@ This plugin replaces the older *Ogoship API for WooCommerce* (version 3.x), whic
 
 Your existing product data carries across untouched — both plugins store it in exactly the same place, so there is nothing to migrate and nothing to re-enter.
 
-Install this plugin, then deactivate the old one. While both are active this plugin stays out of the way to avoid showing you two copies of every field, and offers a button to deactivate the old plugin for you.
+Install this plugin and connect your store at WooCommerce → OGOship, then deactivate the old one. Keep the old plugin active until the store is connected, because it sends your orders to OGOship until then. While both are active this plugin stays out of the way to avoid showing you two copies of every field, and once the store is connected it offers a button to deactivate the old plugin for you.
 
 == Frequently Asked Questions ==
 

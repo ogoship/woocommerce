@@ -28,9 +28,9 @@ under one account means the old listing can point at the new one).
 Used under the plugin title in search results. The `readme.txt` line directly
 under the header block must match this exactly.
 
-> Companion plugin for the OGOship fulfillment service. Adds OGOship product fields and shows shipment tracking to your customers.
+> Companion plugin for the OGOship fulfillment service. Adds OGOship product fields, pickup points at checkout and shipment tracking.
 
-(128 characters.)
+(131 characters.)
 
 ### Tags
 
@@ -94,11 +94,17 @@ Things the plugin review team commonly flag, and where this plugin stands:
 - **Licence.** MIT, declared in the plugin header, `readme.txt` and
   `composer.json`, with the full text in `LICENSE` inside the zip. MIT is
   GPL-compatible, which is the directory's requirement.
-- **No external requests on install or activation.** The plugin makes no
-  outbound HTTP calls at all. OGOship calls *in*, over the store's own
-  WooCommerce REST API.
-- **No tracking, no analytics, no phone-home.** Nothing is collected or
-  transmitted.
+- **No external requests on install or activation.** OGOship calls *in*, over
+  the store's own WooCommerce REST API. The plugin contacts OGOship in two
+  places only, both disclosed under `== External services ==` in the readme: the
+  OGOship shipping method asks `api.ogoship.com` for pickup points and rates at
+  cart and checkout, once a merchant has added the method to a shipping zone;
+  and WooCommerce → OGOship shows the store's page from `my2.ogoship.com` in a
+  frame when a store manager opens that screen.
+- **No tracking, no analytics, no phone-home.** The rate request carries the
+  shipping destination, because the nearest pickup points depend on it, and
+  nothing else about the customer. The full list of what is sent is in the
+  readme's `== External services ==` section.
 - **No bundled third-party code.** No `vendor/` in the zip — the plugin
   autoloads its own classes, and Composer is a development dependency only.
 - **Trademark use.** "WooCommerce" appears in the `X for WooCommerce` form the
@@ -138,6 +144,7 @@ installs) stays published — pulling it would break those stores. Instead:
 3. Once the remaining installs have migrated, close the old listing.
 
 The migration itself is lossless — both plugins store the same product meta
-under the same keys — so a merchant installs the new plugin, deactivates the
-old, and keeps their data. The new plugin detects the old one and offers a
-one-click deactivation to make that the obvious path.
+under the same keys — so a merchant installs the new plugin, connects the
+store, deactivates the old, and keeps their data. The order matters: the old
+plugin sends the orders until the store is connected. The new plugin detects
+the old one and offers a one-click deactivation once the store is connected.
