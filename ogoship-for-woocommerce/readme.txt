@@ -98,6 +98,9 @@ The service is provided by OGOship: [privacy policy](https://ogoship.com/privacy
 1. The OGOship tab on the product edit screen.
 2. The connection status panel at WooCommerce → Status → OGOship.
 3. Tracking as the customer sees it on the order page.
+4. Pickup points at checkout, nearest first, with the carrier and the distance.
+5. The OGOship page at WooCommerce → OGOship: order counts and the delivery options offered at checkout.
+6. The OGOship shipping method in a WooCommerce shipping zone.
 
 == Changelog ==
 

@@ -64,9 +64,21 @@ section, so **the order of that list and the numbering here must stay in step.**
 | File | Caption in readme.txt |
 |---|---|
 | `screenshot-1.png` | The OGOship tab on the product edit screen. |
-| `screenshot-2.png` | OGOship fields on an individual variation, showing the inherited value. |
+| `screenshot-2.png` | The connection status panel at WooCommerce → Status → OGOship. |
 | `screenshot-3.png` | Tracking as the customer sees it on the order page. |
-| `screenshot-4.png` | The connection status panel at WooCommerce → Status → OGOship. |
+| `screenshot-4.png` | Pickup points at checkout, nearest first, with the carrier and the distance. |
+| `screenshot-5.png` | The OGOship page at WooCommerce → OGOship: order counts and the delivery options offered at checkout. |
+| `screenshot-6.png` | The OGOship shipping method in a WooCommerce shipping zone. |
+
+These files are the ones in the SVN `assets/` directory. `bin/screenshots.mjs`
+still produces the older set of four (product tab, variation, tracking, status
+panel) in a different order, and 4–6 were taken by hand from a connected store,
+so check the numbering against this table before regenerating.
+
+WordPress.org takes the captions from the readme in the stable tag. New
+screenshots were added at the end, so the live listing never shows an image
+under another image's caption; reorder them (checkout first) together with
+the readme at a release.
 
 ### Banner and icon — still needed
 
